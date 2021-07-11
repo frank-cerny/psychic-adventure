@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>bike_selling_app.Domain</RootNamespace>
+    <AssemblyName>bike_selling_app.Domain</AssemblyName>
+  </PropertyGroup>
+
+</Project>
