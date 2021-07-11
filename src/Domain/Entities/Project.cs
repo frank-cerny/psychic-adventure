@@ -1,14 +1,18 @@
 using System.Collections.Generic;
+using System;
 
 namespace bike_selling_app.Domain.Entities
 {
     public class Project
     {
-        public Bike bike { get; set; }
-        public IList<CapitalItem> capitalItems { get; set; }
-        public IList<NonCapitalItem> nonCapitalItems { get; set; }
-        public IList<RevenueItem> revenueItems { get; set; }
-        // TODO Add date started, and ended
-        public double netValue { get; set; }
+        public int Id { get; set; }
+        public Bike Bike { get; set; }
+        public int BikeId { get; set; }
+        public IList<CapitalItem> CapitalItems { get; set; }
+        public IList<NonCapitalItem> NonCapitalItems { get; set; }
+        public IList<RevenueItem> RevenueItems { get; set; }
+        public DateTime DateStarted { get; set; }
+        public DateTime DateEnded { get; set; }
+        public double NetValue { get; set; }
     }
 }

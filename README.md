@@ -5,8 +5,10 @@
 
 # TODO
 
-[] Add all entities and wire up initial database
-[] Create all commands/queries
+[x] Add all entities 
+[] Add entity configuration
+[] Run initial migration
+[] Create all commands/queries (with tests along the way)
 [] Create all controllers
 [] Create business logic :)
 [] Add Swagger auto-documenation

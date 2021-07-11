@@ -4,7 +4,7 @@ namespace bike_selling_app.Domain.Entities
 {
     public class CapitalItem : Item
     {
-        public IList<Project> projects { get; set; }
-        public double cost { get; set; }
+        public IList<Project> Projects { get; set; }
+        public double Cost { get; set; }
     }
 }

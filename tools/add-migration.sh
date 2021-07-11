@@ -11,6 +11,6 @@ fi
 WORKING_DIR="$(cd `dirname $0` && cd ../ && pwd)"
 
 export DOTNET_ENVIRONMENT=Development
-dotnet-ef migrations add --project "$WORKING_DIR/src/Infrastructure" --context ApplicationDbContextSqlite --startup-project "$WORKING_DIR/src/WebUI" --output-dir "$WORKING_DIR/Infrastructure/Peristence/Migrations/Sqlite" "$1"
+dotnet-ef migrations add --project "$WORKING_DIR/src/Infrastructure" --context ApplicationDbContextSqlite --startup-project "$WORKING_DIR/src/WebUI" --output-dir "$WORKING_DIR/Infrastructure/Persistence/Migrations/Sqlite" "$1"
 
 export DOTNET_ENVIRONMENT=Production

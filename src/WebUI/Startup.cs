@@ -28,6 +28,7 @@ namespace bike_selling_app.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Include the configuration from the other parts of the project, this is what wires the entire project together
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
@@ -41,8 +42,6 @@ namespace bike_selling_app.WebUI
             services.AddControllersWithViews(options =>
                 options.Filters.Add<ApiExceptionFilterAttribute>())
                     .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
-
-            services.AddRazorPages();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -112,20 +111,6 @@ namespace bike_selling_app.WebUI
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-
-            // app.UseSpa(spa =>
-            // {
-            //     // To learn more about options for serving an Angular SPA from ASP.NET Core,
-            //     // see https://go.microsoft.com/fwlink/?linkid=864501
-
-            //     spa.Options.SourcePath = "ClientApp";
-
-            //     if (env.IsDevelopment())
-            //     {
-            //         //spa.UseAngularCliServer(npmScript: "start");
-            //         spa.UseProxyToSpaDevelopmentServer(Configuration["SpaBaseUrl"] ?? "http://localhost:4200");
-            //     }
-            // });
         }
     }
 }

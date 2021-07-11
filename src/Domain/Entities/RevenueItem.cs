@@ -1,3 +1,5 @@
+using System;
+
 namespace bike_selling_app.Domain.Entities
 {
     public class RevenueItem : Item
@@ -8,5 +10,6 @@ namespace bike_selling_app.Domain.Entities
         public string itemType { get; set; }
         public bool isPending { get; set; }
         public double weight { get; set; }
+        public DateTime dateSold { get; set; }
     }
 }

@@ -1,9 +1,12 @@
+using System;
+
 namespace bike_selling_app.Domain.Entities
 {
     public abstract class Item
     {
-        string name { get; set; }
-        string description { get; set; }
-        // date of purchase
+        public int Id { get; set; }
+        string Name { get; set; }
+        string Description { get; set; }
+        public DateTime DatePurchased { get; set; }
     }
 }
