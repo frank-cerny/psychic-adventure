@@ -1,6 +1,7 @@
 # Pre-Requisites
 
 .NET 5 SDK
+[dotnet-ef](https://docs.microsoft.com/en-us/ef/core/cli/dotnet)
 
 # TODO
 

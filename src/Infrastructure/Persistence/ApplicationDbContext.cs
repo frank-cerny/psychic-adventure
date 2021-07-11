@@ -24,6 +24,12 @@ namespace bike_selling_app.Infrastructure.Persistence
             _dateTime = dateTime;
         }
 
+        public DbSet<Bike> Bikes { get; set; }
+        public DbSet<CapitalItem> CapitalItems { get; set; }
+        public DbSet<NonCapitalItem> NonCapitalItems { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<RevenueItem> RevenueItems { get; set; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
