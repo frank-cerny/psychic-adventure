@@ -11,7 +11,7 @@ namespace bike_selling_app.Domain.Entities
         public double PurchasePrice { get; set; }
         public string PurchasedFrom { get; set; }
         public Project Project { get; set; }
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
         public DateTime DatePurchased { get; set; }
     }
 }

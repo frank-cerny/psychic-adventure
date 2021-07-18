@@ -4,12 +4,11 @@ namespace bike_selling_app.Domain.Entities
 {
     public class RevenueItem : Item
     {
-        public string description { get; set; }
-        public double salePrice { get; set; }
-        public string platformSoldOn { get; set; }
-        public string itemType { get; set; }
-        public bool isPending { get; set; }
-        public double weight { get; set; }
-        public DateTime dateSold { get; set; }
+        public double SalePrice { get; set; }
+        public string PlatformSoldOn { get; set; }
+        public string ItemType { get; set; }
+        public bool IsPending { get; set; }
+        public double Weight { get; set; }
+        public DateTime DateSold { get; set; }
     }
 }

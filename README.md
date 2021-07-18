@@ -12,3 +12,8 @@
 [] Create all controllers
 [] Create business logic :)
 [] Add Swagger auto-documenation
+
+# Questions
+
+1. How to handle postage and such? Call it a non-cap item? Or attach to a revenue item?
+2. How to handle refunds, things getting lost in the mail, etc.
