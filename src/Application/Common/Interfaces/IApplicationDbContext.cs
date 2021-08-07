@@ -1,16 +1,15 @@
 ﻿using bike_selling_app.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace bike_selling_app.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
         Task<int> AddBike(Bike bike);
-        Task RemoveBike(Bike bike);
-        Task<Bike> GetBikeById(int bikeId);
-        Task DeleteBikeById(int bikeId);
+        Task RemoveBike(int bikeId);
+        Task<IList<Bike>> GetAllBikes();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

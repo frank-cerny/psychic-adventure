@@ -13,6 +13,10 @@
 [] Create business logic :)
 [] Add Swagger auto-documenation
 
+## Updating "dotnet-ef"
+
+`dotnet tool update --global dotnet-ef`
+
 # Questions
 
 1. How to handle postage and such? Call it a non-cap item? Or attach to a revenue item?

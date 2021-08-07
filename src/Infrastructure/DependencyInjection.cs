@@ -16,12 +16,17 @@ namespace bike_selling_app.Infrastructure
                 services.AddDbContext<ApplicationDbContext, ApplicationDbContextSqlite>(options =>
                     options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
             }
-            if (configuration.GetValue<bool>("UseSqlServer"))
+            // Reference: https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql
+            if (configuration.GetValue<bool>("UseMariaDb"))
             {
-                services.AddDbContext<ApplicationDbContext, ApplicationDbContextSqlServer>(options =>
-                    options.UseSqlServer(
-                        configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly(typeof(ApplicationDbContextSqlServer).Assembly.FullName)));
+                // TODO - Replace with actual MariaDB Version
+                var serverVersion = new MySqlServerVersion(new System.Version(8, 0, 25));
+
+                services.AddDbContext<ApplicationDbContext, ApplicationDbContextMySql>(options =>
+                    options.UseMySql(configuration.GetConnectionString("DefaultConnection"), serverVersion)
+                    .EnableSensitiveDataLogging()
+                    .EnableSensitiveDataLogging()
+                );
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());

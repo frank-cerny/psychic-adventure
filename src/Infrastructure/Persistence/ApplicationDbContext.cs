@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace bike_selling_app.Infrastructure.Persistence
 {
@@ -74,6 +75,21 @@ namespace bike_selling_app.Infrastructure.Persistence
                 domainEventEntity.IsPublished = true;
                 await _domainEventService.Publish(domainEventEntity);
             }
+        }
+
+        public async Task<int> AddBike(Bike bike)
+        {
+            return 0;
+        }
+
+        public async Task RemoveBike(int bikeId)
+        {
+
+        }
+
+        public async Task<IList<Bike>> GetAllBikes()
+        {
+            return await this.Bikes.ToListAsync();
         }
     }
 }
