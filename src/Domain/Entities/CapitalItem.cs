@@ -6,5 +6,6 @@ namespace bike_selling_app.Domain.Entities
     {
         public IList<Project> Projects { get; set; }
         public double Cost { get; set; }
+        public int UsageCount { get; set; }
     }
 }

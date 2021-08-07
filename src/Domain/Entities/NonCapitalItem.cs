@@ -4,5 +4,6 @@ namespace bike_selling_app.Domain.Entities
     {
         public Project Project { get; set; }
         public double Cost { get; set; }
+        public int Units { get; set; }
     }
 }
