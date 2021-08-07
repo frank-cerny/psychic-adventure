@@ -1,10 +1,12 @@
 using bike_selling_app.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using bike_selling_app.Application.Bikes.Commands;
 using bike_selling_app.Application.Common.Exceptions;
+using System.Linq;
+using System.Globalization;
 
 namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
 {
@@ -29,14 +31,36 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
             FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
             command.bike.DatePurchased = "89chfkjhae";
             FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
-            // Todo add a specific format of dates that we approve of so we can validate!
-            command.bike.DatePurchased = "7112021";
+            command.bike.DatePurchased = "07-11-2021";
+            FluentActions.Invoking(() => SendAsync(command)).Should().NotThrow<ValidationException>();
         }
 
         [Test]
         public async Task ShouldCreateBike()
         {
-
+            var command = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            int bikeId = await SendAsync(command);
+            // Validate these results in the database
+            IList<Bike> allBikes = await Testing.CallContextMethod<IList<Bike>>("GetAllBikes");
+            var newBike = allBikes.ToList().SingleOrDefault(b => b.Id == bikeId);
+            newBike.SerialNumber.Should().Be("12345");
+            newBike.Make.Should().Be("Miyata");
+            newBike.Model.Should().Be("SuperDuty");
+            newBike.PurchasePrice.Should().Be(65.78);
+            newBike.PurchasedFrom.Should().Be("Facebook Marketplace");
+            CultureInfo culture = new CultureInfo("en-US");
+            newBike.DatePurchased.ToShortDateString().Should().Be("8/7/2021");
         }
     }
 }

@@ -77,14 +77,14 @@ namespace bike_selling_app.Infrastructure.Persistence
             }
         }
 
-        public async Task<int> AddBike(Bike bike)
+        public void AddBike(Bike bike)
         {
-            return 0;
+            this.Bikes.Add(bike);
         }
 
-        public async Task RemoveBike(int bikeId)
+        public void RemoveBike(Bike bike)
         {
-
+            this.Bikes.Remove(bike);
         }
 
         public async Task<IList<Bike>> GetAllBikes()

@@ -6,8 +6,8 @@
 # TODO
 
 [x] Add all entities 
-[] Add entity configuration
-[] Run initial migration
+[x] Add entity configuration
+[x] Run initial migration
 [] Create all commands/queries (with tests along the way)
 [] Create all controllers
 [] Create business logic :)
@@ -16,6 +16,14 @@
 ## Updating "dotnet-ef"
 
 `dotnet tool update --global dotnet-ef`
+
+## Using "dotnet-outdated"
+
+This is a useful tool for ensuring our dependencies are updated (and even supports autoupdating!)
+
+[Dotnet Outdated Github](https://github.com/dotnet-outdated/dotnet-outdated)
+
+Run `dotnet-outdated`
 
 # Questions
 

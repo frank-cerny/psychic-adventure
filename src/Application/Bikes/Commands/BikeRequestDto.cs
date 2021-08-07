@@ -14,6 +14,8 @@ namespace bike_selling_app.Application.Bikes.Commands
         public string PurchasedFrom { get; set; }
         public Project Project { get; set; }
         public int? ProjectId { get; set; }
+
+        // Date will be of the form "mmddyyyy" (validated in the validator)
         public string DatePurchased { get; set; }
 
         // This creates a custom mapping where 1 -> 1 mapping is not available

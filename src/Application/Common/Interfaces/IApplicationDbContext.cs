@@ -7,8 +7,8 @@ namespace bike_selling_app.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
-        Task<int> AddBike(Bike bike);
-        Task RemoveBike(int bikeId);
+        void AddBike(Bike bike);
+        void RemoveBike(Bike bike);
         Task<IList<Bike>> GetAllBikes();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

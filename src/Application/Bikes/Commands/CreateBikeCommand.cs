@@ -27,7 +27,9 @@ namespace bike_selling_app.Application.Bikes.Commands
         {
             // Parse the object to a bike and add to the database
             Bike newBike = _mapper.Map<Bike>(request.bike);
-            await _context.AddBike(newBike);
+            _context.AddBike(newBike);
+            await _context.SaveChangesAsync(CancellationToken.None);
+            // This id ONLY exists once changes are saved (otherwise the id has not been created yet)
             return newBike.Id;
         }
     }

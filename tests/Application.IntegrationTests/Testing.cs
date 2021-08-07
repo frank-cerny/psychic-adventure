@@ -2,7 +2,6 @@
 using bike_selling_app.WebUI;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +13,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using bike_selling_app.Application.Common.Interfaces;
 
 [SetUpFixture]
 public class Testing
 {
     private static IConfigurationRoot _configuration;
     private static IServiceScopeFactory _scopeFactory;
+    private static IApplicationDbContext _context; 
 
     [OneTimeSetUp]
     public void RunBeforeAnyTests()
@@ -61,7 +62,10 @@ public class Testing
 
         startup.ConfigureServices(services);
 
-        _scopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
+        var serviceProvider = services.BuildServiceProvider();
+
+        _scopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
+        _context = serviceProvider.GetService<IApplicationDbContext>();
 
         EnsureDatabase();
     }
@@ -94,6 +98,14 @@ public class Testing
         context.Add(entity);
 
         await context.SaveChangesAsync();
+    }
+
+    public static Task<TEntity> CallContextMethod<TEntity>(string methodName, params object[] args) where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        var method = context.GetType().GetMethod(methodName);
+        return method.Invoke(context, args) as Task<TEntity>;
     }
 
     [OneTimeTearDown]
