@@ -13,6 +13,9 @@ using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
+using GraphQL.Server.Ui.Altair;
+using GraphQL.Server;
+using GraphQL.SystemTextJson;
 
 namespace bike_selling_app.WebUI
 {
@@ -111,6 +114,8 @@ namespace bike_selling_app.WebUI
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            app.UseGraphQLAltair();
         }
     }
 }

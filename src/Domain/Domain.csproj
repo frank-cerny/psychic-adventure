@@ -6,4 +6,8 @@
     <AssemblyName>bike_selling_app.Domain</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="GraphQL" Version="4.5.0" />
+  </ItemGroup>
+
 </Project>
