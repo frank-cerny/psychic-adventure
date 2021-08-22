@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Events;
 
 namespace bike_selling_app.WebUI
 {
@@ -14,6 +16,13 @@ namespace bike_selling_app.WebUI
     {
         public async static Task Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("GraphQL", LogEventLevel.Verbose)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
@@ -24,10 +33,11 @@ namespace bike_selling_app.WebUI
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
 
-                    if (context.Database.IsSqlServer())
+                    // If SQLite, we can create the database and stage it
+                    if (context.Database.IsSqlite())
                     {
                         context.Database.Migrate();
-                    }                   
+                    }
 
                     await ApplicationDbContextSeed.SeedSampleDataAsync(context);
                 }
@@ -46,6 +56,7 @@ namespace bike_selling_app.WebUI
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

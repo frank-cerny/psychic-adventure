@@ -123,7 +123,6 @@ namespace bike_selling_app.WebUI
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
             });
 
             // Add all GraphQL related services

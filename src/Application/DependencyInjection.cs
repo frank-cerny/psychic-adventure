@@ -4,6 +4,10 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using GraphQL.Types;
+using bike_selling_app.Application.Common.GraphQL;
+using bike_selling_app.Application.Common.GraphQL.Types;
+using bike_selling_app.Application.Common.GraphQL.Queries;
 
 namespace bike_selling_app.Application
 {
@@ -18,6 +22,12 @@ namespace bike_selling_app.Application
             // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
+            // Add GraphQL related services
+            services.AddSingleton<ISchema, BikeAppSchema>();
+            services.AddTransient<RootQuery>();
+            services.AddTransient<BikeType>();
+            services.AddTransient<BikeQuery>();
 
             return services;
         }
