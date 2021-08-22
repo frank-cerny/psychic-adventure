@@ -13,9 +13,11 @@ using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
+using GraphQL;
 using GraphQL.Server.Ui.Altair;
-using GraphQL.Server;
+using GraphQL.Types;
 using GraphQL.SystemTextJson;
+using bike_selling_app.WebUI.GraphQL;
 
 namespace bike_selling_app.WebUI
 {
@@ -71,6 +73,15 @@ namespace bike_selling_app.WebUI
 
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
+
+            // Add all GraphQL Related services
+            services.AddGraphQL(options => {
+                options.EndPoint = "/graphql";
+            });
+            // Use the default DocumentWriter/Executor provided by GraphQL
+            services.AddSingleton<IDocumentWriter, DocumentWriter>();
+            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            // Add schema and all types
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,6 +126,8 @@ namespace bike_selling_app.WebUI
                 endpoints.MapRazorPages();
             });
 
+            // Add all GraphQL related services
+            app.UseGraphQL();
             app.UseGraphQLAltair();
         }
     }
