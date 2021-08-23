@@ -21,6 +21,7 @@ namespace bike_selling_app.WebUI
                 .MinimumLevel.Override("GraphQL", LogEventLevel.Verbose)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
+                .WriteTo.File("testlog.txt")
                 .CreateLogger();
 
             var host = CreateHostBuilder(args).Build();
