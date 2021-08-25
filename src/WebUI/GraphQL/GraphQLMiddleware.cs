@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using bike_selling_app.Domain.GraphQL;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace bike_selling_app.WebUI.GraphQL
 {
@@ -27,32 +28,52 @@ namespace bike_selling_app.WebUI.GraphQL
             _options = options.Value;
         }
 
+        // TODO - Potential way to make our handler better: https://github.com/graphql-dotnet/graphql-dotnet/issues/1439
         public async Task InvokeAsync(HttpContext httpContext, ISchema schema)
         {
             if (httpContext.Request.Path.StartsWithSegments(_options.EndPoint) && string.Equals(httpContext.Request.Method, "POST", StringComparison.OrdinalIgnoreCase))
             {
-                var request = await JsonSerializer
-                    .DeserializeAsync<GraphQLRequest>(
-                        httpContext.Request.Body,
-                        new JsonSerializerOptions
+                try
+                {
+                    var request = await JsonSerializer
+                        .DeserializeAsync<GraphQLRequest>(
+                            httpContext.Request.Body,
+                            new JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive = true
+                            });
+
+                    var result = await _executor
+                        .ExecuteAsync(doc =>
                         {
-                            PropertyNameCaseInsensitive = true
-                        });
+                            doc.Schema = schema;
+                            doc.Query = request.Query;
+                            doc.Inputs = request.Variables.ToInputs();
+                            doc.ThrowOnUnhandledException = true;
+                        }).ConfigureAwait(false);
 
-                var result = await _executor
-                    .ExecuteAsync(doc =>
+                    if (result?.Errors?.Count > 0)
                     {
-                        doc.Schema = schema;
-                        doc.Query = request.Query;
-                        doc.Inputs = request.Variables.ToInputs();
-                        doc.ThrowOnUnhandledException = true;
-                    }).ConfigureAwait(false);
+                        string[] lines =
+                        {   
+                            result.Errors.ToString()
+                        };
+                        File.WriteAllLines("output.txt", lines);
+                    }
 
-                httpContext.Response.ContentType = "application/json";
-                httpContext.Response.StatusCode = 200;
+                    httpContext.Response.ContentType = "application/json";
+                    httpContext.Response.StatusCode = 200;
 
-
-                await _writer.WriteAsync(httpContext.Response.Body, result);
+                    await _writer.WriteAsync(httpContext.Response.Body, result);
+                }
+                catch (System.Exception ex)
+                {
+                    string[] lines =
+                    {
+                        ex.Message, "help!"
+                    };
+                    File.WriteAllLines("output.txt", lines);
+                }
             }
             else
             {
