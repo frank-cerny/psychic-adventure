@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace bike_selling_app.WebUI.IntegrationTests
 {
-    public static class InitDb
+    public static class Utilities
     {
-        public static void InitDbForTests(ApplicationDbContext context)
+        public static void SeedDbForTests(ApplicationDbContext context)
         {
             // Ensure seed data does not already exist
             if (context.Bikes.SingleOrDefault(b => b.Make.Equals("Schwinn")) == null)

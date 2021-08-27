@@ -17,27 +17,16 @@ using System.Text;
 
 namespace bike_selling_app.WebUI.IntegrationTests
 {
-    public class BikeQueryTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class BikeQueryTests : IClassFixture<HttpServerFixture>
     {
-        // private HttpClient _secondClient;
-        // private HttpServerFixture _fixture;
-        // private HttpClient _client;
-        private CustomWebApplicationFactory<Startup> _factory;
         private HttpClient _client;
+        private WebApplicationFactory<Startup> _factory;
 
-        // public BikeQueryTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
-        // {
-        //     // _fixture = fixture;
-        //     // _fixture.OutputHelper = outputHelper;
-        //     // _client = _fixture.CreateClient();
-        // }
-
-        public BikeQueryTests(CustomWebApplicationFactory<Startup> factory)
+        public BikeQueryTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
         {
-            _factory = factory;
-            _client = _factory.CreateClient(new WebApplicationFactoryClientOptions {
-                AllowAutoRedirect = false
-            });
+            // While this will get called each test, the Fixture will only create the factory a single time 
+            _factory = fixture.Factory;
+            _client = _factory.CreateClient();
         }
 
         // TODO - Look at this: https://github.com/mattjhosking/graphql-dotnet-execution-strategy
@@ -58,28 +47,6 @@ namespace bike_selling_app.WebUI.IntegrationTests
             };
             var response = await graphClient.SendQueryAsync<BikeCollectionType>(request);
             response.Data.Bikes[0].SerialNumber.Should().Be("1");
-            // HttpRequestMessage message = new HttpRequestMessage();
-            // var response = await _client.PostAsync("/graphql", message.Content);
-            // response.EnsureSuccessStatusCode();
-            // response.Should().Be("hey");
-            var queryObject = new
-            {
-                query = @"query TestQuery {
-                    bikes {
-                            serialNumber
-                        }
-                    }",
-                variables = new { }
-            };
-            var normalRequest = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                Content = new StringContent(JsonSerializer.Serialize(queryObject), Encoding.UTF8, "application/json")
-            };
-            // var response = await client.PostAsync("https://localhost:5001/graphql", new StringContent(myJson, Encoding.UTF8, "application/json"));
-            var normalResponse = await _client.SendAsync(normalRequest);
-            var responseString = await normalResponse.Content.ReadAsStringAsync();
-            responseString.Should().Be("hey");
         }
     }
 

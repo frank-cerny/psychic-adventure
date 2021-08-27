@@ -13,8 +13,7 @@ using bike_selling_app.Infrastructure.Persistence;
 
 namespace bike_selling_app.WebUI.IntegrationTests
 {
-    public class CustomWebApplicationFactory<TStartup>
-        : WebApplicationFactory<TStartup> where TStartup : class
+    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -40,12 +39,12 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
+                    db.Database.Migrate();
                     db.Database.EnsureCreated();
-                    // db.Database.Migrate();
 
                     try
                     {
-                        InitDb.InitDbForTests(db);
+                        Utilities.SeedDbForTests(db);
     
                     }
                     catch (Exception ex)
