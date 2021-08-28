@@ -8,6 +8,7 @@ using GraphQL.Types;
 using bike_selling_app.Application.Common.GraphQL;
 using bike_selling_app.Application.Common.GraphQL.Types;
 using bike_selling_app.Application.Common.GraphQL.Queries;
+using bike_selling_app.Application.Common.GraphQL.Mutations;
 
 namespace bike_selling_app.Application
 {
@@ -26,8 +27,9 @@ namespace bike_selling_app.Application
             // Add GraphQL related services
             services.AddSingleton<ISchema, BikeAppSchema>();
             services.AddTransient<RootQuery>();
+            services.AddTransient<RootMutation>();
             services.AddTransient<BikeType>();
-            services.AddTransient<BikeQuery>();
+            services.AddTransient<BikeInputType>();
 
             return services;
         }

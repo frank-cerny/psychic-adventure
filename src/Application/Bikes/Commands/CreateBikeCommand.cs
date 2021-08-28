@@ -4,33 +4,35 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace bike_selling_app.Application.Bikes.Commands
 {
-    public class CreateBikeCommand : IRequest<int>
+    public class CreateBikeCommand : IRequest<Bike>
     {
         public BikeRequestDto bike { get; set; }
     }
 
-    public class CreateTodoItemCommandHandler : IRequestHandler<CreateBikeCommand, int>
+    public class CreateTodoItemCommandHandler : IRequestHandler<CreateBikeCommand, Bike>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMapper _mapper;
 
-        public CreateTodoItemCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public CreateTodoItemCommandHandler(IServiceScopeFactory scopeFactory, IMapper mapper)
         {
-            _context = context;
+            _scopeFactory = scopeFactory;
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(CreateBikeCommand request, CancellationToken cancellationToken)
+        public async Task<Bike> Handle(CreateBikeCommand request, CancellationToken cancellationToken)
         {
+            var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             // Parse the object to a bike and add to the database
             Bike newBike = _mapper.Map<Bike>(request.bike);
-            _context.AddBike(newBike);
-            await _context.SaveChangesAsync(CancellationToken.None);
+            context.AddBike(newBike);
+            await context.SaveChangesAsync(CancellationToken.None);
             // This id ONLY exists once changes are saved (otherwise the id has not been created yet)
-            return newBike.Id;
+            return newBike;
         }
     }
 }
