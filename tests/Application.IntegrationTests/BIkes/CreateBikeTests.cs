@@ -50,10 +50,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
                     DatePurchased = "08-07-2021"
                 }
             };
-            int bikeId = await SendAsync(command);
-            // Validate these results in the database
-            IList<Bike> allBikes = await Testing.CallContextMethod<IList<Bike>>("GetAllBikes");
-            var newBike = allBikes.ToList().SingleOrDefault(b => b.Id == bikeId);
+            var newBike = await SendAsync(command);
             newBike.SerialNumber.Should().Be("12345");
             newBike.Make.Should().Be("Miyata");
             newBike.Model.Should().Be("SuperDuty");

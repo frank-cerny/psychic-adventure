@@ -67,7 +67,16 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<ApplicationDbContext>();
                     var logger = scopedServices
-                        .GetRequiredService<ILogger<CustomWebApplicationFactory<Startup>>>();
+                        .GetRequiredService<ILogger<WebApplicationFactory<Startup>>>();
+
+                    // The dispose method in the fixture should remove the database after each run, but just in case
+                    var databasePathConfig = _config.GetValue<string>("ConnectionStrings:DefaultConnection");
+                    // Format of the config is: Filename=web-integration-tests.db
+                    var databasePath = databasePathConfig.Split("=")[1];
+                    if (File.Exists(databasePath))
+                    {
+                        File.Delete(databasePath);
+                    }
 
                     // db.Database.Migrate();
                     db.Database.EnsureCreated();
@@ -75,17 +84,17 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     try
                     {
                         Utilities.SeedDbForTests(db);
-    
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(ex, "An error occurred seeding the " +
-                            "database with test messages. Error: {Message}", ex.Message);
+                             "database with test messages. Error: {Message}", ex.Message);
                     }
                 }
             });
         }
 
+        // TODO - How can we ensure this runs?
         public void Dispose()
         {
             if (this.Factory != null)

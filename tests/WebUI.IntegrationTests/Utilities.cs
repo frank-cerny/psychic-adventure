@@ -9,20 +9,27 @@ namespace bike_selling_app.WebUI.IntegrationTests
     {
         public static void SeedDbForTests(ApplicationDbContext context)
         {
-            // Ensure seed data does not already exist
-            if (context.Bikes.SingleOrDefault(b => b.Make.Equals("Schwinn")) == null)
+            // Add bikes
+            Bike bike1 = new Bike
             {
-                Bike b = new Bike
-                {
-                    SerialNumber = "2124893",
-                    Make = "Schwinn",
-                    Model = "Tempo",
-                    PurchasePrice = 21.45,
-                    PurchasedFrom = "Facebook Marketplace",
-                    DatePurchased = System.DateTime.Today
-                };
-                context.Bikes.Add(b);
-            }
+                SerialNumber = "2124893",
+                Make = "Schwinn",
+                Model = "Tempo",
+                PurchasePrice = 21.45,
+                PurchasedFrom = "Facebook Marketplace",
+                DatePurchased = System.DateTime.Today
+            };
+            Bike bike2 = new Bike
+            {
+                SerialNumber = "1236721-882, 89293, 899921",
+                Make = "Nishiki",
+                Model = "International",
+                PurchasePrice = 34.56,
+                PurchasedFrom = "Ebay",
+                DatePurchased = System.DateTime.Parse("2020-08-02")
+            };
+            context.Bikes.Add(bike1);
+            context.Bikes.Add(bike2);
             context.SaveChanges();
         }
     }

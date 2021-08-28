@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using GraphQL.Types;
+using GraphQL.MicrosoftDI;
 using bike_selling_app.Application.Common.GraphQL;
 using bike_selling_app.Application.Common.GraphQL.Types;
 using bike_selling_app.Application.Common.GraphQL.Queries;
@@ -24,12 +25,8 @@ namespace bike_selling_app.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
-            // Add GraphQL related services
-            services.AddSingleton<ISchema, BikeAppSchema>();
-            services.AddTransient<RootQuery>();
-            services.AddTransient<RootMutation>();
-            services.AddTransient<BikeType>();
-            services.AddTransient<BikeInputType>();
+            // Add GraphQL related services (SelfActivatingServiceProvider adds all types of IGraphObjectType automatically)
+            services.AddSingleton<ISchema, BikeAppSchema>(services => new BikeAppSchema(new SelfActivatingServiceProvider(services)));
 
             return services;
         }

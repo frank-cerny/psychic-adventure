@@ -52,6 +52,9 @@ namespace bike_selling_app.WebUI.GraphQL
                             doc.ThrowOnUnhandledException = true;
                         }).ConfigureAwait(false);
 
+                    // Proper error handling if we want to use middleware: https://graphql-dotnet.github.io/docs/getting-started/errors
+                    // https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.problemdetails?view=aspnetcore-5.0
+                    // If we go the controller approach, this becomes easier
                     if (result?.Errors?.Count > 0)
                     {
                         string[] lines =
