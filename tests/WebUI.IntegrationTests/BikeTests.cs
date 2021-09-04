@@ -114,8 +114,10 @@ namespace bike_selling_app.WebUI.IntegrationTests
             // Add a bike first
             var createMutation = new GraphQLHttpRequest
             {
+                // Ensure we get the id from here, otherwise it will be null when we attempt to access it in the delete request
                 Query = @"mutation createBike($bike: BikeInputType!) {
                             addBike(bike : $bike) {
+                                id
                                 serialNumber
                                 model
                             }
@@ -163,6 +165,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createBike($bike: BikeInputType!) {
                             addBike(bike : $bike) {
+                                id
                                 serialNumber
                                 model
                             }

@@ -1,2 +1,2 @@
-Cannot resolve 'System.Collections.Generic.IEnumerable`1[MediatR.IPipelineBehavior`2[bike_selling_app.Application.Bikes.Commands.DeleteBikeCommand,bike_selling_app.Domain.Entities.Bike]]' from root provider because it requires scoped service 'bike_selling_app.Application.Common.Interfaces.IApplicationDbContext'.
+One or more validation failures have occurred.
 help!

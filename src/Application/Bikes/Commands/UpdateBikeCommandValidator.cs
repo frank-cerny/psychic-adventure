@@ -4,15 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using bike_selling_app.Application.Common.Interfaces;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace bike_selling_app.Application.Bikes.Commands
 {
     public class UpdateBikeCommandValidator : AbstractValidator<UpdateBikeCommand>
     {
         private IApplicationDbContext _context;
-        public UpdateBikeCommandValidator(IApplicationDbContext context)
+        public UpdateBikeCommandValidator(IServiceScopeFactory scopeFactory)
         {
-            _context = context;
+            _context = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             RuleFor(req => req.bike.DatePurchased).Must(HasValidDateString).WithMessage("Invalid date string. Date string must be a valid date.");
             RuleFor(req => req.bike).Must(HasAllNonNullFieldsWhereApplicable).WithMessage("All fields must be non-null (except ProjectId)");
             RuleFor(b => b.bikeId).MustAsync(BikeIdMustExist).WithMessage("Invalid request. Bike id must exist when updating");
