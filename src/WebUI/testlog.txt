@@ -974,3 +974,93 @@ WHERE changes() = 1 AND "rowid" = last_insert_rowid();
 2021-09-03 22:19:57.399 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 157
 2021-09-03 22:19:57.406 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 157 - 200 0 - 6.1759ms
 2021-09-03 22:20:57.444 -04:00 [INF] Application is shutting down...
+2021-09-03 22:22:06.449 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-03 22:22:06.635 -04:00 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-03 22:22:06.655 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-03 22:22:06.689 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-03 22:22:06.726 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-03 22:22:07.029 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."Make" = 'Schwinn'
+LIMIT 2
+2021-09-03 22:22:07.141 -04:00 [ERR] An error occurred while migrating or seeding the database.
+System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.ThrowHelper.ThrowMoreThanOneElementException()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at bike_selling_app.Infrastructure.Persistence.ApplicationDbContextSeed.SeedSampleDataAsync(ApplicationDbContext context) in c:\Users\Frank\Documents\GitHub\bike-selling-app\src\Infrastructure\Persistence\ApplicationDbContextSeed.cs:line 12
+   at bike_selling_app.WebUI.Program.Main(String[] args) in c:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI\Program.cs:line 43
+2021-09-04 07:50:31.814 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-04 07:50:32.048 -04:00 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-04 07:50:32.068 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-04 07:50:32.093 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-04 07:50:32.119 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-04 07:50:32.378 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."Make" = 'Schwinn'
+LIMIT 2
+2021-09-04 07:50:32.473 -04:00 [ERR] An error occurred while migrating or seeding the database.
+System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.ThrowHelper.ThrowMoreThanOneElementException()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at bike_selling_app.Infrastructure.Persistence.ApplicationDbContextSeed.SeedSampleDataAsync(ApplicationDbContext context) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Infrastructure\Persistence\ApplicationDbContextSeed.cs:line 12
+   at bike_selling_app.WebUI.Program.Main(String[] args) in c:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI\Program.cs:line 43
+2021-09-04 07:51:19.098 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-04 07:51:19.349 -04:00 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-04 07:51:19.412 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-04 07:51:19.598 -04:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-04 07:51:19.688 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-04 07:51:20.146 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-04 07:51:20.349 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-04 07:51:20.682 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-04 07:51:20.726 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-04 07:51:20.744 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-04 07:51:20.749 -04:00 [INF] Hosting environment: Development
+2021-09-04 07:51:20.753 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-04 07:51:30.485 -04:00 [INF] Request starting HTTP/2 GET https://localhost:5001/ui/altair - -
+2021-09-04 07:51:30.578 -04:00 [INF] Request finished HTTP/2 GET https://localhost:5001/ui/altair - - - 200 - text/html 95.9801ms
+2021-09-04 07:52:10.421 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 304
+2021-09-04 07:52:10.703 -04:00 [INF] bike_selling_app Request: CreateBikeCommand {"bike":{"SerialNumber":"728","Make":"Ross","Model":"Crusier","PurchasedFrom":"Facebook Marketplace","PurchasePrice":13.99,"DatePurchased":"2020-08-15","Project":null,"ProjectId":null,"$type":"BikeRequestDto"},"$type":"CreateBikeCommand"}
+2021-09-04 07:52:10.950 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-04 07:52:11.093 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?', @p1='?' (Size = 4), @p2='?' (Size = 7), @p3='?', @p4='?', @p5='?' (Size = 20), @p6='?' (Size = 3)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Bikes" ("DatePurchased", "Make", "Model", "ProjectId", "PurchasePrice", "PurchasedFrom", "SerialNumber")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+SELECT "Id"
+FROM "Bikes"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-09-04 07:52:11.188 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 304 - 200 - application/json 766.7784ms
+2021-09-04 07:52:22.253 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 142
+2021-09-04 07:52:22.355 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-04 07:52:22.383 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-04 07:52:22.454 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 142 - 200 - application/json 200.9197ms
+2021-09-04 07:52:34.721 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 157
+2021-09-04 07:52:34.738 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 157 - 200 0 - 17.1332ms
+2021-09-04 08:00:37.656 -04:00 [INF] Application is shutting down...

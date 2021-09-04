@@ -21,6 +21,5 @@ namespace bike_selling_app.Application.Bikes.Commands
             var bikes = await _context.GetAllBikes();
             return (bikes.SingleOrDefault(b => b.Id == id) != null);
         }
-
     }
 }

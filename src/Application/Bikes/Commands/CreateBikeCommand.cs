@@ -13,12 +13,12 @@ namespace bike_selling_app.Application.Bikes.Commands
         public BikeRequestDto bike { get; set; }
     }
 
-    public class CreateTodoItemCommandHandler : IRequestHandler<CreateBikeCommand, Bike>
+    public class CreateBikeCommandHandler : IRequestHandler<CreateBikeCommand, Bike>
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMapper _mapper;
 
-        public CreateTodoItemCommandHandler(IServiceScopeFactory scopeFactory, IMapper mapper)
+        public CreateBikeCommandHandler(IServiceScopeFactory scopeFactory, IMapper mapper)
         {
             _scopeFactory = scopeFactory;
             _mapper = mapper;

@@ -25,11 +25,7 @@ public class Testing
     [OneTimeSetUp]
     public void RunBeforeAnyTests()
     {
-        // Remove log and database from past run
-        if (File.Exists("test-database.db"))
-        {
-            File.Delete("test-database.db");
-        }
+        // Remove database from past run
         if (File.Exists("testrun.log"))
         {
             File.Delete("testrun.log");
@@ -70,7 +66,7 @@ public class Testing
         EnsureDatabase();
     }
 
-    private static void EnsureDatabase()
+    public static void EnsureDatabase()
     {
         using var scope = _scopeFactory.CreateScope();
 

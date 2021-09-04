@@ -84,7 +84,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
             };
             FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().Throw<ValidationException>();
             deleteCommand.bikeId = newBike.Id;
-            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().NotThrow<ValidationException>();   
+            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().NotThrow<ValidationException>();
         }
 
         [Test]
@@ -108,9 +108,160 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
             {
                 bikeId = newBike.Id
             };
-            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().NotThrow<ValidationException>();
+            var deletedBike = await SendAsync<Bike>(deleteCommand);
+            deletedBike.SerialNumber.Should().Be("12345");
+            deletedBike.Model.Should().Be("SuperDuty");
             // On second call to delete, there should be a validation exception because it no longer exists
-            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().Throw<ValidationException>();   
+            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().Throw<ValidationException>();
+        }
+
+        // Update Bike Tests
+        [Test]
+        public async Task ShouldRequireValidIdOnUpdate()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            var updateCommand = new UpdateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "F150",
+                    PurchasePrice = 72.25,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                },
+                bikeId = -1
+            };
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
+            updateCommand.bikeId = newBike.Id;
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
+        }
+
+        [Test]
+        public async Task ShouldRequireNonNullEntity()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            var updateCommand = new UpdateBikeCommand
+            {
+                // The make is mising from the request DTO, so the call should fail
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Model = "F150",
+                    PurchasePrice = 72.25,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                },
+                bikeId = newBike.Id
+            };
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
+            updateCommand.bike.Make = "Ross";
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
+        }
+
+        [Test]
+        public async Task ShouldRequireValidDateStringOnUpdate()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            var updateCommand = new UpdateBikeCommand
+            {
+                // The make is mising from the request DTO, so the call should fail
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Ross",
+                    Model = "F150",
+                    PurchasePrice = 72.25,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "4374987198347"
+                },
+                bikeId = newBike.Id
+            };
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
+            updateCommand.bike.DatePurchased = "05-25-2019";
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
+        }
+
+        [Test]
+        public async Task ShouldUpdateBike()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            var updateCommand = new UpdateBikeCommand
+            {
+                // The make is mising from the request DTO, so the call should fail
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "54321",
+                    Make = "Canyon",
+                    Model = "Diverge",
+                    PurchasePrice = 165.99,
+                    PurchasedFrom = "Ebay",
+                    DatePurchased = "05-25-2019"
+                },
+                bikeId = newBike.Id
+            };
+            var updatedBike = await SendAsync(updateCommand);
+            // This proves the update command returns a bike entity
+            updatedBike.Make.Should().Be("Canyon");
+            var allBikes = await CallContextMethod<IList<Bike>>("GetAllBikes");
+            updatedBike = allBikes.SingleOrDefault(b => b.Id == updatedBike.Id);
+            // Get updated bike from database as well to validate changes took hold
+            updatedBike.Make.Should().Be("Canyon");
+            updatedBike.Model.Should().Be("Diverge");
+            updatedBike.PurchasePrice.Should().Be(165.99);
+            updatedBike.PurchasedFrom.Should().Be("Ebay");
+            updatedBike.SerialNumber.Should().Be("54321");
+            CultureInfo culture = new CultureInfo("en-US");
+            updatedBike.DatePurchased.ToShortDateString().Should().Be("5/25/2019");
         }
     }
 }

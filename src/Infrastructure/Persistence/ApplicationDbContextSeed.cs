@@ -9,7 +9,7 @@ namespace bike_selling_app.Infrastructure.Persistence
         public static async Task SeedSampleDataAsync(ApplicationDbContext context)
         {
             // Ensure seed data does not already exist
-            if (context.Bikes.SingleOrDefault(b => b.Make.Equals("Schwinn")) == null)
+            if (context.Bikes.SingleOrDefault(b => b.SerialNumber.Equals("2124893")) == null)
             {
                 Bike b = new Bike 
                 {

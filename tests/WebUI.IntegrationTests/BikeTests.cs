@@ -26,6 +26,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
         public BikeTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
         {
             // While this will get called each test, the Fixture will only create the factory a single time 
+            // This means we use the same database instance for each test, so each test should be idempotent
             _factory = fixture.Factory;
             _client = _factory.CreateClient();
         }
@@ -152,6 +153,63 @@ namespace bike_selling_app.WebUI.IntegrationTests
             var deleteMutationResponse = await graphClient.SendMutationAsync<RemoveBikeType>(deleteMutation);
             deleteMutationResponse.Data.removeBike.Model.Should().Be("Hard Rock");
         }
+
+        [Fact]
+        public async Task TestUpdateBike()
+        {
+            var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
+            // Add a bike first
+            var createMutation = new GraphQLHttpRequest
+            {
+                Query = @"mutation createBike($bike: BikeInputType!) {
+                            addBike(bike : $bike) {
+                                serialNumber
+                                model
+                            }
+                        }",
+                OperationName = "Add Bike",
+                Variables = new
+                {
+                    bike = new
+                    {
+                        serialNumber = "738272",
+                        make = "Specialized",
+                        model = "Hard Rock",
+                        purchasedFrom = "FB Marketplace",
+                        purchasePrice = 45.99,
+                        datePurchased = System.DateTime.Parse("2019-07-19")
+                    }
+                }
+            };
+            var createMutationResponse = await graphClient.SendMutationAsync<AddBikeType>(createMutation);
+            createMutationResponse.Data.addBike.SerialNumber.Should().Be("738272");
+            var updateMutation = new GraphQLHttpRequest
+            {
+                Query = @"mutation updateBike($id: Int!, $bike: BikeInputType!) {
+                            updateBike(id: $id, bike: $bike) {
+                                serialNumber
+                                model
+                            }
+                        }",
+                OperationName = "Remove Bike",
+                Variables = new
+                {
+                    id = createMutationResponse.Data.addBike.Id,
+                    bike = new
+                    {
+                        serialNumber = "34893021",
+                        make = "Specialized",
+                        model = "Hard Rock V2",
+                        purchasedFrom = "FB Marketplace",
+                        purchasePrice = 45.99,
+                        datePurchased = System.DateTime.Parse("2019-07-19")
+                    }
+                }
+            };
+            var updateMutationResponse = await graphClient.SendMutationAsync<UpdateBikeType>(updateMutation);
+            updateMutationResponse.Data.updateBike.Model.Should().Be("Hard Rock V2");
+            updateMutationResponse.Data.updateBike.SerialNumber.Should().Be("34893021");
+        }
     }
 
     public class BikeCollectionType
@@ -195,5 +253,18 @@ namespace bike_selling_app.WebUI.IntegrationTests
         //   }
         // }
         public Bike removeBike { get; set; }
+    }
+
+    public class UpdateBikeType
+    {
+        // This mocks a reponse that looks like
+        // {
+        //   "data": {
+        //     "updateBike": {
+        //       "serialNumber": "123456758493572987"
+        //     }
+        //   }
+        // }
+        public Bike updateBike { get; set; }
     }
 }

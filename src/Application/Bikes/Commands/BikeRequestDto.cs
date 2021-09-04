@@ -12,7 +12,6 @@ namespace bike_selling_app.Application.Bikes.Commands
         public string Model { get; set; }
         public double PurchasePrice { get; set; }
         public string PurchasedFrom { get; set; }
-        public Project Project { get; set; }
         public int? ProjectId { get; set; }
 
         // Date will be of the form "mmddyyyy" (validated in the validator)
