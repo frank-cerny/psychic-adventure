@@ -13,6 +13,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
     using static Testing;
     public class CreateBikeTests : TestBase
     {
+        // Create Bike Tests
         [Test]
         public async Task ShouldRequireValidDateString()
         {
@@ -58,6 +59,58 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
             newBike.PurchasedFrom.Should().Be("Facebook Marketplace");
             CultureInfo culture = new CultureInfo("en-US");
             newBike.DatePurchased.ToShortDateString().Should().Be("8/7/2021");
+        }
+
+        // Delete Bike Tests
+        [Test]
+        public async Task ShouldRequireValidIdToDelete()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            var deleteCommand = new DeleteBikeCommand
+            {
+                bikeId = -1
+            };
+            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().Throw<ValidationException>();
+            deleteCommand.bikeId = newBike.Id;
+            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().NotThrow<ValidationException>();   
+        }
+
+        [Test]
+        public async Task ShouldDeleteBike()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            newBike.SerialNumber.Should().Be("12345");
+            var deleteCommand = new DeleteBikeCommand
+            {
+                bikeId = newBike.Id
+            };
+            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().NotThrow<ValidationException>();
+            // On second call to delete, there should be a validation exception because it no longer exists
+            FluentActions.Invoking(() => SendAsync(deleteCommand)).Should().Throw<ValidationException>();   
         }
     }
 }

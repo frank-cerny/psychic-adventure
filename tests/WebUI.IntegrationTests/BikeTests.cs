@@ -75,8 +75,10 @@ namespace bike_selling_app.WebUI.IntegrationTests
                             }
                         }",
                 OperationName = "Add Bike",
-                Variables = new {
-                    bike = new {
+                Variables = new
+                {
+                    bike = new
+                    {
                         serialNumber = "738272",
                         make = "Specialized",
                         model = "Hard Rock",
@@ -102,6 +104,53 @@ namespace bike_selling_app.WebUI.IntegrationTests
             var queryResponse = await graphClient.SendQueryAsync<BikeCollectionType>(query);
             // Just validate that there are 3 bikes total, the application integration tests validate the database is fully correct
             queryResponse.Data.Bikes.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public async Task TestRemoveBike()
+        {
+            var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
+            // Add a bike first
+            var createMutation = new GraphQLHttpRequest
+            {
+                Query = @"mutation createBike($bike: BikeInputType!) {
+                            addBike(bike : $bike) {
+                                serialNumber
+                                model
+                            }
+                        }",
+                OperationName = "Add Bike",
+                Variables = new
+                {
+                    bike = new
+                    {
+                        serialNumber = "738272",
+                        make = "Specialized",
+                        model = "Hard Rock",
+                        purchasedFrom = "FB Marketplace",
+                        purchasePrice = 45.99,
+                        datePurchased = System.DateTime.Parse("2019-07-19")
+                    }
+                }
+            };
+            var createMutationResponse = await graphClient.SendMutationAsync<AddBikeType>(createMutation);
+            createMutationResponse.Data.addBike.SerialNumber.Should().Be("738272");
+            var deleteMutation = new GraphQLHttpRequest
+            {
+                Query = @"mutation deleteBike($id: Int!) {
+                            removeBike(id: $id) {
+                                serialNumber
+                                model
+                            }
+                        }",
+                OperationName = "Remove Bike",
+                Variables = new
+                {
+                    id = createMutationResponse.Data.addBike.Id
+                }
+            };
+            var deleteMutationResponse = await graphClient.SendMutationAsync<RemoveBikeType>(deleteMutation);
+            deleteMutationResponse.Data.removeBike.Model.Should().Be("Hard Rock");
         }
     }
 
@@ -133,5 +182,18 @@ namespace bike_selling_app.WebUI.IntegrationTests
         //   }
         // }
         public Bike addBike { get; set; }
+    }
+
+    public class RemoveBikeType
+    {
+        // This mocks a reponse that looks like
+        // {
+        //   "data": {
+        //     "removeBike": {
+        //       "serialNumber": "123456758493572987"
+        //     }
+        //   }
+        // }
+        public Bike removeBike { get; set; }
     }
 }

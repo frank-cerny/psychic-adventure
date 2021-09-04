@@ -26,6 +26,18 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                 // This call returns a bike object, which is automatically converted to BikeType by this field
                 return await mediator.Send<Bike>(command);
             });
+            FieldAsync<BikeType>(
+            "removeBike",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
+            ),
+            resolve: async context =>
+            {
+                var command = new DeleteBikeCommand {
+                    bikeId = context.GetArgument<int>("id")
+                };
+                return await mediator.Send<Bike>(command);
+            });
         }
     }
 }
