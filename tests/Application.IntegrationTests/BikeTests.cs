@@ -8,10 +8,10 @@ using bike_selling_app.Application.Common.Exceptions;
 using System.Linq;
 using System.Globalization;
 
-namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
+namespace bike_selling_app.Application.IntegrationTests.Bikes
 {
     using static Testing;
-    public class CreateBikeTests : TestBase
+    public class BikeTests : TestBase
     {
         // Create Bike Tests
         [Test]
@@ -33,6 +33,27 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
             command.bike.DatePurchased = "89chfkjhae";
             FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
             command.bike.DatePurchased = "07-11-2021";
+            FluentActions.Invoking(() => SendAsync(command)).Should().NotThrow<ValidationException>();
+        }
+
+        [Test]
+        public async Task ShouldRequireValidProjectIdOnCreate()
+        {
+            var command = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "07-11-2021",
+                    ProjectId = -1
+                }
+            };
+            FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
+            command.bike.ProjectId = null;
             FluentActions.Invoking(() => SendAsync(command)).Should().NotThrow<ValidationException>();
         }
 
@@ -262,6 +283,42 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes.Commands
             updatedBike.SerialNumber.Should().Be("54321");
             CultureInfo culture = new CultureInfo("en-US");
             updatedBike.DatePurchased.ToShortDateString().Should().Be("5/25/2019");
+        }
+
+        [Test]
+        public async Task ShouldRequireValidProjectIdOnUpdate()
+        {
+            var createCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Miyata",
+                    Model = "SuperDuty",
+                    PurchasePrice = 65.78,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-07-2021"
+                }
+            };
+            var newBike = await SendAsync(createCommand);
+            var updateCommand = new UpdateBikeCommand
+            {
+                // The make is mising from the request DTO, so the call should fail
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "12345",
+                    Make = "Ross",
+                    Model = "F150",
+                    PurchasePrice = 72.25,
+                    PurchasedFrom = "Facebook Marketplace",
+                    DatePurchased = "08-09-2021",
+                    ProjectId = -1
+                },
+                bikeId = newBike.Id
+            };
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
+            updateCommand.bike.ProjectId = null;
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
         }
     }
 }

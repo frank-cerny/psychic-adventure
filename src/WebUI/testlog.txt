@@ -240,3 +240,94 @@ LIMIT 2
 2021-09-05 16:29:32.804 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 1780
 2021-09-05 16:29:33.270 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 1780 - 200 - application/json 466.2396ms
 2021-09-05 16:38:06.796 -04:00 [INF] Application is shutting down...
+2021-09-05 17:40:31.058 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-05 17:40:31.473 -04:00 [INF] Executed DbCommand (31ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-05 17:40:31.527 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-05 17:40:31.569 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-05 17:40:31.623 -04:00 [INF] Applying migration '20210905205103_updating_indices'.
+2021-09-05 17:40:31.755 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP INDEX "IX_Bikes_SerialNumber";
+2021-09-05 17:40:31.761 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Bikes_SerialNumber_Make_Model" ON "Bikes" ("SerialNumber", "Make", "Model");
+2021-09-05 17:40:31.768 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20210905205103_updating_indices', '5.0.5');
+2021-09-05 17:40:32.749 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-05 17:40:32.967 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-05 17:40:33.206 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-05 17:40:33.208 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-05 17:40:33.214 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-05 17:40:33.217 -04:00 [INF] Hosting environment: Development
+2021-09-05 17:40:33.219 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-05 17:40:44.135 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 142
+2021-09-05 17:40:44.327 -04:00 [ERR] GraphQL Error. Timestamp: 9/5/2021 9:40:44 PM, Message: The GraphQL type for field 'ProjectType.DateEnded' could not be derived implicitly from expression 'p => p.DateEnded'., Details: System.ArgumentException: The GraphQL type for field 'ProjectType.DateEnded' could not be derived implicitly from expression 'p => p.DateEnded'.
+ ---> System.ArgumentOutOfRangeException: Explicitly nullable type: Nullable<DateTime> cannot be coerced to a non nullable GraphQL type. (Parameter 'isNullable')
+   at GraphQL.TypeExtensions.GetGraphTypeFromType(Type type, Boolean isNullable, TypeMappingMode mode) in /_/src/GraphQL/TypeExtensions.cs:line 115
+   at GraphQL.Types.ComplexGraphType`1.Field[TProperty](String name, Expression`1 expression, Boolean nullable, Type type) in /_/src/GraphQL/Types/Composite/ComplexGraphType.cs:line 417
+   --- End of inner exception stack trace ---
+   at GraphQL.Types.ComplexGraphType`1.Field[TProperty](String name, Expression`1 expression, Boolean nullable, Type type) in /_/src/GraphQL/Types/Composite/ComplexGraphType.cs:line 421
+   at GraphQL.Types.ComplexGraphType`1.Field[TProperty](Expression`1 expression, Boolean nullable, Type type) in /_/src/GraphQL/Types/Composite/ComplexGraphType.cs:line 467
+   at bike_selling_app.Application.Common.GraphQL.Types.ProjectType..ctor(IServiceScopeFactory scopeFactory) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\GraphQL\Types\ProjectType.cs:line 16
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at GraphQL.MicrosoftDI.SelfActivatingServiceProvider.GetService(Type serviceType) in /_/src/GraphQL.MicrosoftDI/SelfActivatingServiceProvider.cs:line 40
+   at GraphQL.Utilities.ServiceProviderExtensions.GetRequiredService(IServiceProvider provider, Type serviceType) in /_/src/GraphQL/Utilities/ServiceProviderExtensions.cs:line 29
+   at GraphQL.Types.SchemaTypes.<>c__DisplayClass7_0.<.ctor>b__2(Type t) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 141
+   at GraphQL.Types.SchemaTypes.AddTypeIfNotRegistered(Type type, TypeCollectionContext context) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 539
+   at GraphQL.Types.SchemaTypes.HandleField(IComplexGraphType parentType, FieldType field, TypeCollectionContext context, Boolean applyNameConverter) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 429
+   at GraphQL.Types.SchemaTypes.AddType(IGraphType type, TypeCollectionContext context) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 333
+   at GraphQL.Types.SchemaTypes.AddTypeWithLoopCheck(IGraphType resolvedType, TypeCollectionContext context, Type namedType) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 511
+   at GraphQL.Types.SchemaTypes.AddTypeIfNotRegistered(Type type, TypeCollectionContext context) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 539
+   at GraphQL.Types.SchemaTypes.HandleField(IComplexGraphType parentType, FieldType field, TypeCollectionContext context, Boolean applyNameConverter) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 429
+   at GraphQL.Types.SchemaTypes.AddType(IGraphType type, TypeCollectionContext context) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 333
+   at GraphQL.Types.SchemaTypes..ctor(ISchema schema, IServiceProvider serviceProvider) in /_/src/GraphQL/Types/Collections/SchemaTypes.cs:line 154
+   at GraphQL.Types.Schema.CreateSchemaTypes() in /_/src/GraphQL/Types/Schema.cs:line 328
+   at GraphQL.Types.Schema.Initialize() in /_/src/GraphQL/Types/Schema.cs:line 102
+   at GraphQL.DocumentExecuter.ExecuteAsync(ExecutionOptions options) in /_/src/GraphQL/Execution/DocumentExecuter.cs:line 80
+2021-09-05 17:40:44.399 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 142 - 200 - application/json 265.8561ms
+2021-09-05 17:41:12.422 -04:00 [INF] Application is shutting down...
+2021-09-05 17:50:06.010 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-05 17:50:06.199 -04:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-05 17:50:06.220 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-05 17:50:06.245 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-05 17:50:06.272 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-05 17:50:06.531 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-05 17:50:06.683 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-05 17:50:06.937 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-05 17:50:06.942 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-05 17:50:06.944 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-05 17:50:06.946 -04:00 [INF] Hosting environment: Development
+2021-09-05 17:50:06.947 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-05 17:50:12.082 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 157
+2021-09-05 17:50:12.321 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-05 17:50:12.353 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-05 17:50:12.461 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 157 - 200 - application/json 383.0511ms
+2021-09-05 17:50:29.671 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 189
+2021-09-05 17:50:29.729 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-05 17:50:29.741 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-05 17:50:29.753 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 189 - 200 - application/json 81.5603ms
+2021-09-05 17:50:39.670 -04:00 [INF] Application is shutting down...

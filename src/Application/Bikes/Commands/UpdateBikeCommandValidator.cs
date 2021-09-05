@@ -17,6 +17,7 @@ namespace bike_selling_app.Application.Bikes.Commands
             RuleFor(req => req.bike.DatePurchased).Must(HasValidDateString).WithMessage("Invalid date string. Date string must be a valid date.");
             RuleFor(req => req.bike).Must(HasAllNonNullFieldsWhereApplicable).WithMessage("All fields must be non-null (except ProjectId)");
             RuleFor(b => b.bikeId).MustAsync(BikeIdMustExist).WithMessage("Invalid request. Bike id must exist when updating");
+            RuleFor(req => req.bike.ProjectId).MustAsync(HasValidProject).WithMessage("Invalid project id. Project must exist");
         }
 
         public bool HasValidDateString(string datetime)
@@ -38,6 +39,16 @@ namespace bike_selling_app.Application.Bikes.Commands
         public bool HasAllNonNullFieldsWhereApplicable(BikeRequestDto bike)
         {
             return (bike.DatePurchased != null & bike.Make != null & bike.Model != null & bike.PurchasedFrom != null & bike.SerialNumber != null);
+        }
+
+        public async Task<bool> HasValidProject(int? projectId, CancellationToken cancellationToken)
+        {
+            if (!projectId.HasValue)
+            {
+                return true;
+            }
+            var project = await _context.GetProjectById(projectId.Value);
+            return (project != null);
         }
     }
 }

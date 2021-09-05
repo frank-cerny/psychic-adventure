@@ -91,5 +91,10 @@ namespace bike_selling_app.Infrastructure.Persistence
         {
             return await this.Bikes.ToListAsync();
         }
+
+        public Task<Project> GetProjectById(int id)
+        {
+            return Task.FromResult(this.Projects.SingleOrDefault(p => p.Id == id));
+        }
     }
 }
