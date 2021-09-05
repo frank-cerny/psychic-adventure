@@ -214,3 +214,29 @@ bike_selling_app.Application.Common.Exceptions.ValidationException: One or more 
 2021-09-05 14:22:28.746 -04:00 [ERR] GraphQL Error. Timestamp: 9/5/2021 6:22:28 PM, Message: Variable '$id' is invalid. No value provided for a non-null variable., Details: 
 2021-09-05 14:22:28.750 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 290 - 200 - application/json 11.8214ms
 2021-09-05 14:23:04.993 -04:00 [INF] Application is shutting down...
+2021-09-05 16:29:22.602 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-05 16:29:22.875 -04:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-05 16:29:22.909 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-05 16:29:22.942 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-05 16:29:22.987 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-05 16:29:23.347 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-05 16:29:23.505 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-05 16:29:23.834 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-05 16:29:23.837 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-05 16:29:23.841 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-05 16:29:23.842 -04:00 [INF] Hosting environment: Development
+2021-09-05 16:29:23.847 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-05 16:29:24.112 -04:00 [INF] Request starting HTTP/2 GET https://localhost:5001/ui/altair - -
+2021-09-05 16:29:24.177 -04:00 [INF] Request finished HTTP/2 GET https://localhost:5001/ui/altair - - - 200 - text/html 67.9363ms
+2021-09-05 16:29:32.804 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 1780
+2021-09-05 16:29:33.270 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 1780 - 200 - application/json 466.2396ms
+2021-09-05 16:38:06.796 -04:00 [INF] Application is shutting down...

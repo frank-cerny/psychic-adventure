@@ -71,7 +71,7 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.MySql
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("SerialNumber")
+                    b.HasIndex("SerialNumber", "Make", "Model")
                         .IsUnique();
 
                     b.ToTable("Bikes");

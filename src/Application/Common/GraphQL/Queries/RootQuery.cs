@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using bike_selling_app.Application.Common.GraphQL.Types;
 using System.Collections.Generic;
 using bike_selling_app.Application.Common.Interfaces;
+using GraphQL;
 
 namespace bike_selling_app.Application.Common.GraphQL.Queries
 {

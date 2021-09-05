@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bike_selling_app.Infrastructure.Persistence;
 
 namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(ApplicationDbContextSqlite))]
-    partial class ApplicationDbContextSqliteModelSnapshot : ModelSnapshot
+    [Migration("20210905205103_updating_indices")]
+    partial class updating_indices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

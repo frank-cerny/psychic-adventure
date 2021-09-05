@@ -80,10 +80,10 @@ namespace bike_selling_app.WebUI.GraphQL
 
                 httpContext.Response.ContentType = "application/json";
                 // If there are input errors, add additional fields to match that of custom errors (otherwise the client will never know that something is wrong)
-                if (result?.Errors?.Count != 0)
+                if (result?.Errors != null && result?.Errors.Count != 0)
                 {
                     // Based on codes from: https://graphql-dotnet.github.io/docs/getting-started/errors
-                    foreach (ExecutionError err in result?.Errors)
+                    foreach (ExecutionError err in result.Errors)
                     {
                         // If the error is an input error (i.e. not a custom exception, add custom fields)
                         if (err is DocumentError)
