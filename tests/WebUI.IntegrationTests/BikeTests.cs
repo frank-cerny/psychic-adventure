@@ -213,6 +213,82 @@ namespace bike_selling_app.WebUI.IntegrationTests
             updateMutationResponse.Data.updateBike.Model.Should().Be("Hard Rock V2");
             updateMutationResponse.Data.updateBike.SerialNumber.Should().Be("34893021");
         }
+
+        [Fact]
+        // This test ensures that custom errors are handled correctly for clients
+        public async Task TestValidationErrorHandling()
+        {
+            var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
+            // Attempt an update request with an invalid id (-1)
+            var updateMutation = new GraphQLHttpRequest
+            {
+                Query = @"mutation updateBike($id: Int!, $bike: BikeInputType!) {
+                            updateBike(id: $id, bike: $bike) {
+                                serialNumber
+                                model
+                            }
+                        }",
+                OperationName = "Remove Bike",
+                Variables = new
+                {
+                    id = -1,
+                    bike = new
+                    {
+                        serialNumber = "34893021",
+                        make = "Specialized",
+                        model = "Hard Rock V2",
+                        purchasedFrom = "FB Marketplace",
+                        purchasePrice = 45.99,
+                        datePurchased = System.DateTime.Parse("2019-07-19")
+                    }
+                }
+            };
+            var updateMutationResponse = await graphClient.SendMutationAsync<UpdateBikeType>(updateMutation);
+            // updateMutationResponse.Data.errors[0].extensions[0].data.errorType.Should().Be("validation");
+            // The graphQL client library automatically parses Errors into a class if they exist (which automatically deserializes too)
+            var dataString = JsonSerializer.Serialize(updateMutationResponse.Errors[0].Extensions["data"]);
+            var data = JsonSerializer.Deserialize<ErrorData>(dataString);
+            data.errorType.Should().Be("validation");
+        }
+
+        [Fact]
+        // This test ensures that input errors (like invalid variable names) are handled like our customer errors
+        public async Task TestInputErrorHandling()
+        {
+            var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
+            var updateMutation = new GraphQLHttpRequest
+            {
+                Query = @"mutation updateBike($id: Int!, $bike: BikeInputType!) {
+                            updateBike(id: $id, bike: $bike) {
+                                serialNumber
+                                model
+                            }
+                        }",
+                OperationName = "Remove Bike",
+                Variables = new
+                {
+                    // This field does not exist, and it should cause an input error
+                    idd = -1,
+                    bike = new
+                    {
+                        serialNumber = "34893021",
+                        make = "Specialized",
+                        model = "Hard Rock V2",
+                        purchasedFrom = "FB Marketplace",
+                        purchasePrice = 45.99,
+                        datePurchased = System.DateTime.Parse("2019-07-19")
+                    }
+                }
+            };
+            var updateMutationResponse = await graphClient.SendMutationAsync<UpdateBikeType>(updateMutation);
+            // updateMutationResponse.Data.errors[0].extensions[0].data.errorType.Should().Be("validation");
+            // The graphQL client library automatically parses Errors into a class if they exist (which automatically deserializes too)
+            var dataString = JsonSerializer.Serialize(updateMutationResponse.Errors[0].Extensions["data"]);
+            var data = JsonSerializer.Deserialize<ErrorData>(dataString);
+            data.errorType.Should().Be("input");
+            updateMutationResponse.Errors[0].Extensions["code"].Should().Be("INVALID_VALUE");
+            updateMutationResponse.Errors[0].Message.Should().Be("Variable '$id' is invalid. No value provided for a non-null variable.");
+        }
     }
 
     public class BikeCollectionType
