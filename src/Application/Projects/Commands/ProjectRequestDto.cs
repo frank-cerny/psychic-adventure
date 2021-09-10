@@ -9,6 +9,7 @@ namespace bike_selling_app.Application.Projects.Commands
     public class ProjectRequestDto : IMapFrom<Project>
     {
         public int Id { get; set; }
+        public string Description { get; set; } = "";
         public IList<int> BikeIds { get; set; } = new List<int>();
         public IList<int> CapitalItemIds { get; set; } = new List<int>();
         public IList<int> NonCapitalItemIds { get; set; } = new List<int>();

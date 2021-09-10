@@ -32,6 +32,7 @@ namespace bike_selling_app.Application.Projects.Commands
             var bikes = await context.GetAllBikes();
             // TODO - Get all items here
             var newProject = new Project();
+            newProject.Description = request.project.Description;
             // If dates given are not null, parse them
             if (request.project.DateStarted != null)
             {
