@@ -50,6 +50,7 @@ namespace bike_selling_app.Application.Projects.Commands
                 newProject.Bikes.Add(bike);
             }
             // TODO - Add item related ones (capital item, revenue item, non capital item)
+            context.AddProject(newProject);
             await context.SaveChangesAsync(CancellationToken.None);
             // This id ONLY exists once changes are saved (otherwise the id has not been created yet)
             return newProject;

@@ -87,14 +87,29 @@ namespace bike_selling_app.Infrastructure.Persistence
             this.Bikes.Remove(bike);
         }
 
+        public void AddProject(Project project)
+        {
+            this.Projects.Add(project);
+        }
+
+        public void RemoveProject(Project project)
+        {
+            this.Projects.Remove(project);
+        }
+
         public async Task<IList<Bike>> GetAllBikes()
         {
             return await this.Bikes.ToListAsync();
         }
 
+        public async Task<IList<Project>> GetAllProjects()
+        {
+            return await this.Projects.ToListAsync();
+        }
+
         public Task<Project> GetProjectById(int id)
         {
-            return Task.FromResult(this.Projects.SingleOrDefault(p => p.Id == id));
+            return Task.FromResult(this.Projects.Include(p => p.Bikes).SingleOrDefault(p => p.Id == id));
         }
     }
 }

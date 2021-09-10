@@ -9,8 +9,11 @@ namespace bike_selling_app.Application.Common.Interfaces
     {
         void AddBike(Bike bike);
         void RemoveBike(Bike bike);
+        void AddProject(Project project);
+        void RemoveProject(Project project);
         Task<IList<Bike>> GetAllBikes();
         Task<Project> GetProjectById(int id);
+        Task<IList<Project>> GetAllProjects();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

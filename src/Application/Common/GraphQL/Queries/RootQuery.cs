@@ -22,6 +22,14 @@ namespace bike_selling_app.Application.Common.GraphQL.Queries
                     return await dbContext.GetAllBikes();
                 }
             );
+            FieldAsync<ListGraphType<ProjectType>, IList<Project>> (
+                name: "projects",
+                resolve: async context =>
+                {
+                    var dbContext = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                    return await dbContext.GetAllProjects();
+                }
+            );
         }
     }
 }

@@ -148,11 +148,14 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.MySql
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateEnded")
+                    b.Property<DateTime?>("DateEnded")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("DateStarted")
+                    b.Property<DateTime?>("DateStarted")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
 
                     b.Property<double>("NetValue")
                         .HasColumnType("double");

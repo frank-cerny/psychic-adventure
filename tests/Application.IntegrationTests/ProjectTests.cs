@@ -78,13 +78,71 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
         [Test]
         public async Task ShouldCreateProjectWithoutBikes()
         {
-
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12"
+                }
+            };
+            var result = await SendAsync(projectCommand);
+            // Get the project from the database to validate it was stored correctly
+            var newProject = await CallContextMethod<Project>("GetProjectById", result.Id);
+            newProject.Description.Should().Be("A simple project!");
+            CultureInfo culture = new CultureInfo("en-US");
+            newProject.DateStarted.Value.ToShortDateString().Should().Be("9/15/2020");
+            newProject.DateEnded.Value.ToShortDateString().Should().Be("10/12/2020");
         }
 
         [Test]
         public async Task ShouldCreateProjectWithBikes()
         {
             // Create 2 bikes to add to the project creation
+            var bikeCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "32781937298",
+                    DatePurchased = "2020-08-12",
+                    Make = "Schwinn",
+                    Model = "Starlet II",
+                    PurchasedFrom = "Facebook Marketplace"
+                }
+            };
+            var newBike1 = await SendAsync<Bike>(bikeCommand);
+            bikeCommand = new CreateBikeCommand
+            {
+                bike = new BikeRequestDto
+                {
+                    SerialNumber = "231222-32F",
+                    DatePurchased = "2020-07-16",
+                    Make = "Huffy",
+                    Model = "Sportsman",
+                    PurchasedFrom = "Ebay"
+                }
+            };
+            var newBike2 = await SendAsync<Bike>(bikeCommand);
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12",
+                    BikeIds = new List<int>() { newBike1.Id, newBike2.Id }
+                }
+            };
+            var result = await SendAsync(projectCommand);
+            // Get the project from the database to validate it was stored correctly
+            var newProject = await CallContextMethod<Project>("GetProjectById", result.Id);
+            newProject.Description.Should().Be("A simple project!");
+            CultureInfo culture = new CultureInfo("en-US");
+            newProject.DateStarted.Value.ToShortDateString().Should().Be("9/15/2020");
+            newProject.DateEnded.Value.ToShortDateString().Should().Be("10/12/2020");
+            newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike1.Id);
+            newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike2.Id);
         }
     }
 }
