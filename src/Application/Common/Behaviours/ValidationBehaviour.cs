@@ -28,7 +28,10 @@ namespace bike_selling_app.Application.Common.Behaviours
                 var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
 
                 if (failures.Count != 0)
+                {
+                    // TODO - Log errors to the console as well (create serilog logging strategy, see RDP)
                     throw new ValidationException(failures);
+                }
             }
             return await next();
         }

@@ -21,16 +21,18 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
-                    Title = "testing"
+                    Title = "testing-1"
                 }
             };
             // Validate both dates being null
             FluentActions.Invoking(() => SendAsync(command)).Should().NotThrow<ValidationException>();
             // Validate only start date being non-null
             command.project.DateStarted = "2020-09-08";
+            command.project.Title = "testing-11";
             FluentActions.Invoking(() => SendAsync(command)).Should().NotThrow<ValidationException>();
             // Validate invalid start date
             command.project.DateStarted = "fjdhajkfsf";
+            command.project.Title = "testing-111";
             FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
             command.project.DateStarted = "2020-07-21";
             // Validate invalid end date
@@ -41,6 +43,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
             // Both valid dates
             command.project.DateEnded = "2020-09-10";
+            command.project.Title = "testing-1111";
             FluentActions.Invoking(() => SendAsync(command)).Should().NotThrow<ValidationException>();
             // Validate that a null start date and non-null end date is invalid
             command.project.DateStarted = null;
@@ -54,6 +57,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
+                    Title = "testing1",
                     BikeIds = new List<int>() { -1 }
                 }
             };
@@ -82,6 +86,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
+                    Title = "testing2",
                     Description = "A simple project!",
                     DateStarted = "2020-09-15",
                     DateEnded = "2020-10-12"
@@ -128,7 +133,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
-                    Title = "New!",
+                    Title = "testing3",
                     Description = "A simple project!",
                     DateStarted = "2020-09-15",
                     DateEnded = "2020-10-12",
@@ -144,7 +149,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             newProject.DateEnded.Value.ToShortDateString().Should().Be("10/12/2020");
             newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike1.Id);
             newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike2.Id);
-            newProject.Title.Should().Be("New!");
+            newProject.Title.Should().Be("testing3");
         }
 
         [Test]
@@ -155,7 +160,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
-                    Title = "New!",
+                    Title = "testing4",
                     Description = "A simple project!",
                     DateStarted = "2020-09-15",
                     DateEnded = "2020-10-12"
@@ -170,6 +175,18 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
         }
 
         // Delete Tests
+
+        [Test]
+        public async Task ShouldRequireValidIdToDelete()
+        {
+            
+        }
+
+        [Test]
+        public async Task ShouldDeleteProject()
+        {
+            
+        }
 
         // Update Tests
     }
