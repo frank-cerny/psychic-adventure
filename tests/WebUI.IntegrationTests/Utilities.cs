@@ -2,6 +2,7 @@ using bike_selling_app.Infrastructure.Persistence;
 using bike_selling_app.Domain.Entities;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace bike_selling_app.WebUI.IntegrationTests
 {
@@ -28,8 +29,17 @@ namespace bike_selling_app.WebUI.IntegrationTests
                 PurchasedFrom = "Ebay",
                 DatePurchased = System.DateTime.Parse("2020-08-02")
             };
+            // Add test project
+            Project project = new Project
+            {
+                Title = "Test Project",
+                Description = "A simple test project!",
+                DateStarted = System.DateTime.Parse("2020-09-15"),
+                Bikes = new List<Bike>() { bike1 }
+            };
             context.Bikes.Add(bike1);
             context.Bikes.Add(bike2);
+            context.Projects.Add(project);
             context.SaveChanges();
         }
     }

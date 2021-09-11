@@ -31,82 +31,94 @@ namespace bike_selling_app.WebUI.IntegrationTests
             _client = _factory.CreateClient();
         }
 
-        // TODO
         [Fact]
         public async Task TestGetAllProjects()
         {
             var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
             var request = new GraphQLHttpRequest
             {
+                Query = @"query GetAllProjects {
+                            projects {
+                                title
+                                description
+                                dateStarted
+                                dateEnded
+                                bikes {
+                                    make
+                                }
+                            }
+                        }",
+                OperationName = "Get All Projects",
+                Variables = new object { }
+            };
+            var response = await graphClient.SendQueryAsync<ProjectCollectionType>(request);
+            // Validate that there is a single project
+            response.Data.Projects.Should().HaveCount(1);
+            response.Data.Projects[0].Description.Should().Be("A simple test project!");
+            response.Data.Projects[0].Title.Should().Be("Test Project");
+            response.Data.Projects[0].DateStarted.Should().Be(DateTime.Parse("2020-09-15"));
+            // Check that the project contains a single bike
+            response.Data.Projects[0].Bikes.Should().HaveCount(1);
+            response.Data.Projects[0].Bikes[0].Make.Should().Be("Schwinn");
+        }
+
+        [Fact]
+        public async Task TestAddProject()
+        {
+            var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
+            // Query the bikes for ids to put in the project
+            var getAllBikesRequest = new GraphQLHttpRequest
+            {
                 Query = @"query GetAllBikes {
                             bikes {
-                                serialNumber
-                                make
-                                model
-                                purchasePrice
-                                purchasedFrom
-                                datePurchased
+                                id
                             }
                         }",
                 OperationName = "Get All Bikes",
                 Variables = new object { }
             };
-            var response = await graphClient.SendQueryAsync<BikeCollectionType>(request);
-            // Validate that there is a single project
-            response.Data.Bikes.Should().HaveCount(2);
-            var bike1 = response.Data.Bikes.SingleOrDefault(b => b.SerialNumber.Equals("2124893"));
-            bike1.Make.Should().Be("Schwinn");
-            bike1.PurchasePrice.Should().Be(21.45);
-            bike1.DatePurchased.Should().Be(System.DateTime.Today);
-            var bike2 = response.Data.Bikes.SingleOrDefault(b => b.SerialNumber.Equals("1236721-882, 89293, 899921"));
-            bike2.Model.Should().Be("International");
-            bike2.PurchasedFrom.Should().Be("Ebay");
-            bike2.DatePurchased.Should().Be(System.DateTime.Parse("2020-08-02"));
-        }
-
-        // TODO
-        [Fact]
-        public async Task TestAddProject()
-        {
-            var graphClient = new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new System.Uri("https://localhost:5001/graphql") }, new SystemTextJsonSerializer(), _client);
-            var mutation = new GraphQLHttpRequest
+            var bikeResponse = await graphClient.SendQueryAsync<BikeCollectionType>(getAllBikesRequest);
+            bikeResponse.Data.Bikes.Should().HaveCount(2);
+            // Now create the project (with the 2 bikes from above)
+            var createProjectMutation = new GraphQLHttpRequest
             {
-                Query = @"mutation createBike($bike: BikeInputType!) {
-                            addBike(bike : $bike) {
-                                serialNumber
-                                model
+                Query = @"mutation createProject($project: ProjectInputType!) {
+                            addProject(project : $project) {
+                                title
+                                bikes {
+                                    id
+                                }
                             }
                         }",
-                OperationName = "Add Bike",
+                OperationName = "Add Project",
                 Variables = new
                 {
-                    bike = new
+                    project = new
                     {
-                        serialNumber = "738272",
-                        make = "Specialized",
-                        model = "Hard Rock",
-                        purchasedFrom = "FB Marketplace",
-                        purchasePrice = 45.99,
-                        datePurchased = System.DateTime.Parse("2019-07-19")
+                        title = "A new project!",
+                        description = "I can create a project!",
+                        bikeIds = bikeResponse.Data.Bikes.Select(b => b.Id).ToList()
                     }
                 }
             };
-            var mutationResponse = await graphClient.SendMutationAsync<AddBikeType>(mutation);
-            mutationResponse.Data.addBike.SerialNumber.Should().Be("738272");
-            mutationResponse.Data.addBike.Model.Should().Be("Hard Rock");
-            var query = new GraphQLHttpRequest
+            var projectMutationResponse = await graphClient.SendMutationAsync<AddProjectType>(createProjectMutation);
+            projectMutationResponse.Data.addProject.Title.Equals("A new project!");
+            projectMutationResponse.Data.addProject.Bikes.Select(b => b.Id).ToList().Should().BeEquivalentTo(bikeResponse.Data.Bikes.Select(b => b.Id).ToList());
+            // Now verify that the project has been added by querying for it
+            var newProjectQuery = new GraphQLHttpRequest
             {
-                Query = @"query TestQuery {
-                            bikes {
-                                serialNumber
+                Query = @"query GetProjects {
+                            projects {
+                                id
+                                title
                             }
                         }",
-                OperationName = "Test Operation",
+                OperationName = "Get new project",
                 Variables = new object { }
             };
-            var queryResponse = await graphClient.SendQueryAsync<BikeCollectionType>(query);
-            // Just validate that there are 3 bikes total, the application integration tests validate the database is fully correct
-            queryResponse.Data.Bikes.Should().HaveCount(3);
+            var queryResponse = await graphClient.SendQueryAsync<ProjectCollectionType>(newProjectQuery);
+            queryResponse.Data.Projects.Should().HaveCount(2);
+            queryResponse.Data.Projects.Select(p => p.Title).ToList().Should().Contain("A new project!");
         }
     }
 
@@ -117,7 +129,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
         //   "data": {
         //     "projects": [
         //       {
-        //         "description": "Garfield Heights Project",
+        //         "title": "Garfield Heights Project"
+        //         "description": "4 bikes, not bad!",
         //       },
         //      ]
         //    }

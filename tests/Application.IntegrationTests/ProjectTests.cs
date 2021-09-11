@@ -21,7 +21,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
-
+                    Title = "testing"
                 }
             };
             // Validate both dates being null
@@ -128,6 +128,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             {
                 project = new ProjectRequestDto
                 {
+                    Title = "New!",
                     Description = "A simple project!",
                     DateStarted = "2020-09-15",
                     DateEnded = "2020-10-12",
@@ -143,6 +144,33 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             newProject.DateEnded.Value.ToShortDateString().Should().Be("10/12/2020");
             newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike1.Id);
             newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike2.Id);
+            newProject.Title.Should().Be("New!");
         }
+
+        [Test]
+        public async Task ShouldRequireUniqueTitleOnCreate()
+        {
+            // Create project
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Title = "New!",
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12"
+                }
+            };
+            var result = await SendAsync(projectCommand);
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().Throw<ValidationException>();
+            projectCommand.project.Title = "A different title!";
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().NotThrow<ValidationException>();
+            projectCommand.project.Title = null;
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().Throw<ValidationException>();
+        }
+
+        // Delete Tests
+
+        // Update Tests
     }
 }

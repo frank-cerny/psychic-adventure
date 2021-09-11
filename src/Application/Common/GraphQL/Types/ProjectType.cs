@@ -14,6 +14,8 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
             Field(p => p.Id);
             Field(p => p.DateStarted, nullable: true);
             Field(p => p.DateEnded, nullable: true);
+            Field(p => p.Description, nullable: true);
+            Field(p => p.Title, nullable: false);
             Field(p => p.NetValue);
             // The name of the field should match the name in the entity (not case sensitive though)
             FieldAsync<ListGraphType<BikeType>, IList<Bike>>(

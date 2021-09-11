@@ -17,6 +17,7 @@ namespace bike_selling_app.Application.Projects.Commands
             _context = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             RuleFor(req => req.project).Must(HasValidDateStrings).WithMessage("Invalid date string. Date string must be a valid date or null.");
             RuleFor(req => req.project.BikeIds).MustAsync(HasValidBikeIds).WithMessage("All bike ids must exist");
+            RuleFor(req => req.project.Title).MustAsync(HasUniqueTitle).WithMessage("Project title must be unique!");
         }
 
         // TODO - Add validation for all item based things
@@ -74,6 +75,16 @@ namespace bike_selling_app.Application.Projects.Commands
                 }
             }
             return true;
+        }
+
+        public async Task<bool> HasUniqueTitle(string title, CancellationToken cancellationToken)
+        {
+            if (title == null || title.Equals(""))
+            {
+                return false;
+            }
+            var projects = await _context.GetAllProjects();
+            return !projects.Select(p => p.Title).Contains(title);
         }
     }
 }

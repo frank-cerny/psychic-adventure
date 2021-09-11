@@ -155,12 +155,19 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<double>("NetValue")
                         .HasColumnType("double");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.ToTable("Projects");
                 });

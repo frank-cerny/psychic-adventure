@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bike_selling_app.Infrastructure.Persistence;
 
 namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(ApplicationDbContextSqlite))]
-    partial class ApplicationDbContextSqliteModelSnapshot : ModelSnapshot
+    [Migration("20210911124836_updating-project-entity")]
+    partial class updatingprojectentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +156,6 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<double>("NetValue")
@@ -164,9 +165,6 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
 
                     b.ToTable("Projects");
                 });

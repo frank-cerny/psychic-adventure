@@ -6,7 +6,8 @@ namespace bike_selling_app.Domain.Entities
     public class Project
     {
         public int Id { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = "";
+        public string Title { get; set; }
         public IList<Bike> Bikes { get; set; } = new List<Bike>();
         public IList<CapitalItem> CapitalItems { get; set; } = new List<CapitalItem>();
         public IList<NonCapitalItem> NonCapitalItems { get; set; } = new List<NonCapitalItem>();

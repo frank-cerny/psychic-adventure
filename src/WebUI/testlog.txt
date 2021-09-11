@@ -331,3 +331,311 @@ SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", 
 FROM "Bikes" AS "b"
 2021-09-05 17:50:29.753 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 189 - 200 - application/json 81.5603ms
 2021-09-05 17:50:39.670 -04:00 [INF] Application is shutting down...
+2021-09-11 09:00:55.229 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:00:55.687 -04:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:00:55.709 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:00:55.732 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-11 09:00:55.776 -04:00 [INF] Applying migration '20210910194456_updatingProjectEntity'.
+2021-09-11 09:00:55.895 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Projects" ADD "Description" TEXT NULL;
+2021-09-11 09:00:55.903 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ef_temp_Projects" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Projects" PRIMARY KEY AUTOINCREMENT,
+    "DateEnded" TEXT NULL,
+    "DateStarted" TEXT NULL,
+    "Description" TEXT NULL,
+    "NetValue" REAL NOT NULL
+);
+2021-09-11 09:00:55.909 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "ef_temp_Projects" ("Id", "DateEnded", "DateStarted", "Description", "NetValue")
+SELECT "Id", "DateEnded", "DateStarted", "Description", "NetValue"
+FROM Projects;
+2021-09-11 09:00:55.935 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 0;
+2021-09-11 09:00:55.941 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE "Projects";
+2021-09-11 09:00:55.947 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "ef_temp_Projects" RENAME TO "Projects";
+2021-09-11 09:00:55.956 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 1;
+2021-09-11 09:00:55.959 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20210910194456_updatingProjectEntity', '5.0.5');
+2021-09-11 09:00:55.973 -04:00 [INF] Applying migration '20210911124836_updating-project-entity'.
+2021-09-11 09:00:56.010 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Projects" ADD "Title" TEXT NULL;
+2021-09-11 09:00:56.017 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20210911124836_updating-project-entity', '5.0.5');
+2021-09-11 09:00:56.041 -04:00 [INF] Applying migration '20210911125519_updating-project-entity-again'.
+2021-09-11 09:00:56.071 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Projects_Title" ON "Projects" ("Title");
+2021-09-11 09:00:56.074 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20210911125519_updating-project-entity-again', '5.0.5');
+2021-09-11 09:00:57.075 -04:00 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-11 09:00:57.336 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-09-11 09:00:57.359 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-11 09:00:57.504 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-11 09:00:58.132 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-11 09:00:58.138 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-11 09:00:58.143 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-11 09:00:58.146 -04:00 [INF] Hosting environment: Development
+2021-09-11 09:00:58.148 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-11 09:00:58.366 -04:00 [INF] Request starting HTTP/2 GET https://localhost:5001/ui/altair - -
+2021-09-11 09:00:58.478 -04:00 [INF] Request finished HTTP/2 GET https://localhost:5001/ui/altair - - - 200 - text/html 114.5032ms
+2021-09-11 09:01:38.168 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 172
+2021-09-11 09:01:38.458 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:01:38.497 -04:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+2021-09-11 09:01:38.597 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 172 - 200 - application/json 428.8711ms
+2021-09-11 09:02:03.736 -04:00 [INF] Application is shutting down...
+2021-09-11 09:02:10.334 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:02:10.502 -04:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:02:10.523 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:02:10.544 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-11 09:02:10.575 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-11 09:02:10.824 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-11 09:02:10.983 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-09-11 09:02:10.997 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-11 09:02:11.277 -04:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?', @p1='?', @p2='?' (Size = 22), @p3='?', @p4='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Projects" ("DateEnded", "DateStarted", "Description", "NetValue", "Title")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT "Id"
+FROM "Projects"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-09-11 09:02:11.321 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p6='?', @p5='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2021-09-11 09:02:11.429 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-11 09:02:11.662 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-11 09:02:11.664 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-11 09:02:11.666 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-11 09:02:11.668 -04:00 [INF] Hosting environment: Development
+2021-09-11 09:02:11.673 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-11 09:02:14.854 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 172
+2021-09-11 09:02:15.142 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:02:15.167 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+2021-09-11 09:02:15.276 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 172 - 200 - application/json 423.8411ms
+2021-09-11 09:02:19.808 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 183
+2021-09-11 09:02:19.822 -04:00 [ERR] GraphQL Error. Timestamp: 9/11/2021 1:02:19 PM, Message: Field bikes of type [BikeType] must have a sub selection, Details: 
+2021-09-11 09:02:19.859 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 183 - 200 - application/json 51.1752ms
+2021-09-11 09:02:29.411 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 247
+2021-09-11 09:02:29.485 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:02:29.499 -04:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+2021-09-11 09:02:29.515 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:02:29.529 -04:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:02:29.537 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 247 - 200 - application/json 126.0964ms
+2021-09-11 09:02:59.830 -04:00 [INF] Application is shutting down...
+2021-09-11 09:50:27.681 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:50:27.878 -04:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:50:27.899 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:50:27.924 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-11 09:50:27.967 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-11 09:50:28.268 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-11 09:50:28.366 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-09-11 09:50:28.485 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-11 09:50:28.707 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-11 09:50:28.709 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-11 09:50:28.711 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-11 09:50:28.712 -04:00 [INF] Hosting environment: Development
+2021-09-11 09:50:28.715 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-11 09:51:41.630 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 273
+2021-09-11 09:51:41.937 -04:00 [INF] bike_selling_app Request: CreateProjectCommand {"project":{"BikeIds":[1,2],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+2021-09-11 09:51:42.015 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:51:42.049 -04:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:51:42.070 -04:00 [ERR] bike_selling_app Request: Unhandled Exception for Request CreateProjectCommand {"project":{"BikeIds":[1,2],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+bike_selling_app.Application.Common.Exceptions.ValidationException: One or more validation failures have occurred.
+   at bike_selling_app.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\ValidationBehaviour.cs:line 31
+   at bike_selling_app.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 22
+2021-09-11 09:51:42.152 -04:00 [ERR] GraphQL Error. Timestamp: 9/11/2021 1:51:42 PM, Message: One or more validation failures have occurred., Details: bike_selling_app.Application.Common.Exceptions.ValidationException: One or more validation failures have occurred.
+   at bike_selling_app.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\ValidationBehaviour.cs:line 31
+   at bike_selling_app.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 22
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPostProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPreProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at bike_selling_app.Application.Common.GraphQL.Mutations.RootMutation.<>c__DisplayClass0_0.<<-ctor>b__3>d.MoveNext() in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\GraphQL\Mutations\RootMutation.cs:line 74
+--- End of stack trace from previous location ---
+   at GraphQL.Execution.ExecutionStrategy.ExecuteNodeAsync(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 398
+2021-09-11 09:51:42.222 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 593.2477ms
+2021-09-11 09:52:31.108 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 273
+2021-09-11 09:52:31.119 -04:00 [INF] bike_selling_app Request: CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+2021-09-11 09:52:31.199 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:52:31.211 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:52:31.388 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:52:31.397 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:52:31.571 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?', @p1='?', @p2='?' (Size = 7), @p3='?', @p4='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Projects" ("DateEnded", "DateStarted", "Description", "NetValue", "Title")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT "Id"
+FROM "Projects"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-09-11 09:52:31.603 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p6='?', @p5='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2021-09-11 09:52:31.611 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p1='?', @p0='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p0
+WHERE "Id" = @p1;
+SELECT changes();
+2021-09-11 09:52:31.654 -04:00 [ERR] GraphQL Error. Timestamp: 9/11/2021 1:52:31 PM, Message: Cannot return null for a non-null type. Field: title, Type: String!., Details: System.InvalidOperationException: Cannot return null for a non-null type. Field: title, Type: String!.
+   at GraphQL.Execution.ExecutionStrategy.ValidateNodeResult(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 559
+   at GraphQL.Execution.ExecutionStrategy.CompleteNode(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 474
+2021-09-11 09:52:31.660 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:52:31.667 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:52:31.730 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 621.9998ms
+2021-09-11 09:52:39.976 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 273
+2021-09-11 09:52:40.011 -04:00 [INF] bike_selling_app Request: CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+2021-09-11 09:52:40.056 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:52:40.062 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:52:40.072 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:52:40.078 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:52:40.108 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?', @p1='?', @p2='?' (Size = 7), @p3='?', @p4='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Projects" ("DateEnded", "DateStarted", "Description", "NetValue", "Title")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT "Id"
+FROM "Projects"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-09-11 09:52:40.119 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p6='?', @p5='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2021-09-11 09:52:40.124 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p1='?', @p0='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p0
+WHERE "Id" = @p1;
+SELECT changes();
+2021-09-11 09:52:40.146 -04:00 [ERR] GraphQL Error. Timestamp: 9/11/2021 1:52:40 PM, Message: Cannot return null for a non-null type. Field: title, Type: String!., Details: System.InvalidOperationException: Cannot return null for a non-null type. Field: title, Type: String!.
+   at GraphQL.Execution.ExecutionStrategy.ValidateNodeResult(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 559
+   at GraphQL.Execution.ExecutionStrategy.CompleteNode(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 474
+2021-09-11 09:52:40.159 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:52:40.170 -04:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:52:40.179 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 203.6626ms
+2021-09-11 09:53:00.010 -04:00 [INF] Application is shutting down...
+2021-09-11 09:53:43.311 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:53:43.476 -04:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:53:43.496 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-09-11 09:53:43.518 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-09-11 09:53:43.545 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-09-11 09:53:43.830 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-09-11 09:53:43.939 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-09-11 09:53:44.052 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-11 09:53:44.296 -04:00 [INF] Now listening on: https://localhost:5001
+2021-09-11 09:53:44.299 -04:00 [INF] Now listening on: http://localhost:5000
+2021-09-11 09:53:44.302 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-11 09:53:44.303 -04:00 [INF] Hosting environment: Development
+2021-09-11 09:53:44.305 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-09-11 09:53:49.354 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 273
+2021-09-11 09:53:49.725 -04:00 [INF] bike_selling_app Request: CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+2021-09-11 09:53:49.794 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:53:49.826 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:53:50.066 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:53:50.076 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:53:50.226 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?', @p1='?', @p2='?' (Size = 7), @p3='?', @p4='?' (Size = 14)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Projects" ("DateEnded", "DateStarted", "Description", "NetValue", "Title")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT "Id"
+FROM "Projects"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-09-11 09:53:50.258 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p6='?', @p5='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2021-09-11 09:53:50.266 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p1='?', @p0='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p0
+WHERE "Id" = @p1;
+SELECT changes();
+2021-09-11 09:53:50.304 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-09-11 09:53:50.310 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-09-11 09:53:50.399 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 1049.6020ms
+2021-09-11 09:53:54.575 -04:00 [INF] Application is shutting down...

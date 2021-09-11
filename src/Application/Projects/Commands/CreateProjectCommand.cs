@@ -33,6 +33,7 @@ namespace bike_selling_app.Application.Projects.Commands
             // TODO - Get all items here
             var newProject = new Project();
             newProject.Description = request.project.Description;
+            newProject.Title = request.project.Title;
             // If dates given are not null, parse them
             if (request.project.DateStarted != null)
             {
