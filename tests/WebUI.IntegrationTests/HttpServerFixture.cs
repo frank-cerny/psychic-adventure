@@ -19,6 +19,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
     public sealed class HttpServerFixture : WebApplicationFactory<Startup>, ITestOutputHelperAccessor, IDisposable 
     {
         private WebApplicationFactory<Startup> _factory { get; set; }
+        private ApplicationDbContext _context { get; set; }
         public WebApplicationFactory<Startup> Factory { 
             get {
                 return _factory ?? ConfigureWebApplicationFactory();
@@ -29,12 +30,12 @@ namespace bike_selling_app.WebUI.IntegrationTests
         private readonly string _hostingEnvironment = "IntegrationTests";
         public HttpServerFixture() : base()
         {
-
+            _factory = ConfigureWebApplicationFactory();
         }
 
         public void ConfigureTests()
         {
-            _factory = ConfigureWebApplicationFactory();
+            
         }
 
         private WebApplicationFactory<Startup> ConfigureWebApplicationFactory()
@@ -66,6 +67,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<ApplicationDbContext>();
+                    _context = db;
                     var logger = scopedServices
                         .GetRequiredService<ILogger<WebApplicationFactory<Startup>>>();
 
@@ -73,16 +75,15 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     var databasePathConfig = _config.GetValue<string>("ConnectionStrings:DefaultConnection");
                     // Format of the config is: Filename=web-integration-tests.db
                     var databasePath = databasePathConfig.Split("=")[1];
-                    if (File.Exists(databasePath))
-                    {
-                        File.Delete(databasePath);
-                    }
 
                     // db.Database.Migrate();
                     db.Database.EnsureCreated();
 
                     try
                     {
+                        // Clear the database before re-seeding it (so that all tests have the same base)
+                        // I could have deleted the database, but I could not figure out how to re-create without error
+                        Utilities.Clear(db);
                         Utilities.SeedDbForTests(db);
                     }
                     catch (Exception ex)
@@ -94,19 +95,27 @@ namespace bike_selling_app.WebUI.IntegrationTests
             });
         }
 
-        // TODO - How can we ensure this runs?
-        public void Dispose()
+        public void ResetDb()
         {
-            if (this.Factory != null)
-            {
-                this.Factory.Dispose();
-            }
-            // Remove testing database using IConfiguration (passed in at Startup)
-            var databasePath = _config.GetValue<string>("ConnectionStrings:DefaultConnection");
-            if (File.Exists(databasePath))
-            {
-                File.Delete(databasePath);
-            }
+            var serviceProvider = _factory.Services;
+            var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            Utilities.Clear(context);
+            Utilities.SeedDbForTests(context);
         }
+
+        // TODO - How can we ensure this runs?
+        // public void Dispose()
+        // {
+        //     if (this.Factory != null)
+        //     {
+        //         this.Factory.Dispose();
+        //     }
+        //     // Remove testing database using IConfiguration (passed in at Startup)
+        //     var databasePath = _config.GetValue<string>("ConnectionStrings:DefaultConnection");
+        //     if (File.Exists(databasePath))
+        //     {
+        //         File.Delete(databasePath);
+        //     }
+        // }
     }
 }

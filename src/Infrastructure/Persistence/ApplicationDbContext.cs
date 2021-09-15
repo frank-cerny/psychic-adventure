@@ -112,4 +112,13 @@ namespace bike_selling_app.Infrastructure.Persistence
             return Task.FromResult(this.Projects.Include(p => p.Bikes).SingleOrDefault(p => p.Id == id));
         }
     }
+
+    // Reference: https://stackoverflow.com/questions/15220411/entity-framework-delete-all-rows-in-table
+    public static class EntityExtensions
+    {
+        public static void Clear<T>(this DbSet<T> dbSet) where T : class
+        {
+            dbSet.RemoveRange(dbSet);
+        }
+    }
 }

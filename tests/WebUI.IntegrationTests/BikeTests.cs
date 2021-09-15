@@ -18,16 +18,19 @@ using System.Linq;
 
 namespace bike_selling_app.WebUI.IntegrationTests
 {
-    public class BikeTests : IClassFixture<HttpServerFixture>
+    [Collection("Test Collection")]
+    public class BikeTests
     {
         private HttpClient _client;
         private WebApplicationFactory<Startup> _factory;
 
-        public BikeTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+        // TODO - Add , ITestOutputHelper outputHelper back to constructor?
+        public BikeTests(HttpServerFixture fixture)
         {
             // While this will get called each test, the Fixture will only create the factory a single time 
             // This means we use the same database instance for each test, so each test should be idempotent
             _factory = fixture.Factory;
+            fixture.ResetDb();
             _client = _factory.CreateClient();
         }
 
