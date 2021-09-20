@@ -4,6 +4,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
 {
     public class ProjectInputType : InputObjectGraphType
     {
+        // This maps directly to ProjectRequestDTO (So GraphQL can automatically map on request)
         public ProjectInputType()
         {
             Field<StringGraphType>("dateStarted");

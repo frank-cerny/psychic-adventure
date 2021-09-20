@@ -73,6 +73,37 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                     };
                     return await mediator.Send(command);
                 });
+            FieldAsync<ProjectType>(
+                "removeProject",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" }
+                ),
+                resolve: async context =>
+                {
+                    var projectId = context.GetArgument<int>("id");
+                    var command = new DeleteProjectCommand
+                    {
+                        projectId = projectId
+                    };
+                    return await mediator.Send(command);
+                });
+            FieldAsync<ProjectType>(
+                "updateProject",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<ProjectInputType>> { Name = "project"},
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" }
+                ),
+                resolve: async context =>
+                {
+                    var project = context.GetArgument<ProjectRequestDto>("project");
+                    var projectId = context.GetArgument<int>("id");
+                    var updateCommand = new UpdateProjectCommand
+                    {
+                        project = project,
+                        projectId = projectId
+                    };
+                    return await mediator.Send(updateCommand);
+                });
         }
     }
 }
