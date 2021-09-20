@@ -16,7 +16,7 @@ using System.IO;
 
 namespace bike_selling_app.WebUI.IntegrationTests
 {
-    public sealed class HttpServerFixture : WebApplicationFactory<Startup>, ITestOutputHelperAccessor, IDisposable 
+    public sealed class HttpServerFixture : WebApplicationFactory<Startup>
     {
         private WebApplicationFactory<Startup> _factory { get; set; }
         private ApplicationDbContext _context { get; set; }
@@ -25,7 +25,6 @@ namespace bike_selling_app.WebUI.IntegrationTests
                 return _factory ?? ConfigureWebApplicationFactory();
             }
         }
-        public ITestOutputHelper OutputHelper { get; set; }
         private IConfiguration _config { get; set; }
         private readonly string _hostingEnvironment = "IntegrationTests";
         public HttpServerFixture() : base()
@@ -71,11 +70,6 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     var logger = scopedServices
                         .GetRequiredService<ILogger<WebApplicationFactory<Startup>>>();
 
-                    // The dispose method in the fixture should remove the database after each run, but just in case
-                    var databasePathConfig = _config.GetValue<string>("ConnectionStrings:DefaultConnection");
-                    // Format of the config is: Filename=web-integration-tests.db
-                    var databasePath = databasePathConfig.Split("=")[1];
-
                     // db.Database.Migrate();
                     db.Database.EnsureCreated();
 
@@ -83,7 +77,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     {
                         // Clear the database before re-seeding it (so that all tests have the same base)
                         // I could have deleted the database, but I could not figure out how to re-create without error
-                        Utilities.Clear(db);
+                        Utilities.ClearDb(db);
                         Utilities.SeedDbForTests(db);
                     }
                     catch (Exception ex)
@@ -95,27 +89,13 @@ namespace bike_selling_app.WebUI.IntegrationTests
             });
         }
 
+        // This function allows test classes to reset the database before each test (useful for ensuring tests have the same "base")
         public void ResetDb()
         {
             var serviceProvider = _factory.Services;
             var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            Utilities.Clear(context);
+            Utilities.ClearDb(context);
             Utilities.SeedDbForTests(context);
         }
-
-        // TODO - How can we ensure this runs?
-        // public void Dispose()
-        // {
-        //     if (this.Factory != null)
-        //     {
-        //         this.Factory.Dispose();
-        //     }
-        //     // Remove testing database using IConfiguration (passed in at Startup)
-        //     var databasePath = _config.GetValue<string>("ConnectionStrings:DefaultConnection");
-        //     if (File.Exists(databasePath))
-        //     {
-        //         File.Delete(databasePath);
-        //     }
-        // }
     }
 }

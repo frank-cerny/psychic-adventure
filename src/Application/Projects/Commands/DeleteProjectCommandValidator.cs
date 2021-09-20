@@ -20,7 +20,7 @@ namespace bike_selling_app.Application.Projects.Commands
         public async Task<bool> ProjectIdMustExist(int id, CancellationToken cancellationToken)
         {
             var projects = await _context.GetAllProjects();
-            return !projects.Select(p => p.Id).ToList().Contains(id);
+            return projects.Select(p => p.Id).ToList().Contains(id);
         }
     }
 }

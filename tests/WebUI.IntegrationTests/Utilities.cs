@@ -43,7 +43,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             context.SaveChanges();
         }
 
-        public static void Clear(ApplicationDbContext context)
+        public static void ClearDb(ApplicationDbContext context)
         {
             context.Bikes.Clear();
             context.RevenueItems.Clear();
