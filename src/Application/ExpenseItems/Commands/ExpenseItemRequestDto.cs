@@ -1,15 +1,16 @@
 using System;
 using AutoMapper;
 using bike_selling_app.Domain.Entities;
+using bike_selling_app.Application.Common.Mappings;
 
 namespace bike_selling_app.Application.ExpenseItems.Commands
 {
-    public class ExpenseItemRequestDto
+    public class ExpenseItemRequestDto : IMapFrom<ExpenseItem>
     {
         public double UnitCost { get; set; }
         public int Units { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = "";
         public int ParentItemId { get; set; }
 
         // Date will be of the form "mmddyyyy" (validated in the validator)

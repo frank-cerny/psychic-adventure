@@ -46,6 +46,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
         public static void ClearDb(ApplicationDbContext context)
         {
             context.Bikes.Clear();
+            context.ExpenseItems.Clear();
             context.RevenueItems.Clear();
             context.CapitalItems.Clear();
             context.NonCapitalItems.Clear();

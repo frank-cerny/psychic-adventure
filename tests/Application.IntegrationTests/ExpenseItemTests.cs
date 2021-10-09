@@ -36,10 +36,15 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 Name = "MyItem",
                 UnitCost = 5.67,
                 Units = 1,
-                DatePurchased = "07-11-2021"
+                DatePurchased = "07-11-2021",
+                ParentItemId = parentId
             };
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             createCommand.ExpenseItem.Name = "MyItem2";
+            FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
+            createCommand.ExpenseItem.Name = "MyItem";
+            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
+            createCommand.ExpenseItem.DatePurchased = "05-29-2020";
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
         }
 
@@ -76,7 +81,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     Name = "MyItem",
                     UnitCost = 5.67,
                     Units = 1,
-                    DatePurchased = "077-11-2021",
+                    DatePurchased = "07-11-2021",
                     ParentItemId = -1
                 }
             };
@@ -103,13 +108,13 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             var item = await SendAsync(createCommand);
             item.Name.Should().Be("MyItem");
             // Now validate the updated item in the database matches
-            var expenseItems = await CallContextMethod<List<ExpenseItem>>("GetAllExpenseItems", new object());
-            var newItem = expenseItems.SingleOrDefault(e => e.Name.Equals("MyItem"));
+            var expenseItems = await CallContextMethod<IList<ExpenseItem>>("GetAllExpenseItems");
+            var newItem = expenseItems.ToList().SingleOrDefault(e => e.Name.Equals("MyItem"));
             newItem.Should().NotBeNull();
-            newItem.UnitCost.Should().Be(5.68);
-            newItem.Units.Should().Be(5);
+            newItem.UnitCost.Should().Be(5.67);
+            newItem.Units.Should().Be(1);
             CultureInfo culture = new CultureInfo("en-US");
-            newItem.DatePurchased.ToShortDateString().Should().Be("7/15/2021");
+            newItem.DatePurchased.ToShortDateString().Should().Be("7/11/2021");
             newItem.ParentItemId.Should().Be(parentId);
         }
 
@@ -265,8 +270,8 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             var updatedItem = await SendAsync(updateCommand);
             updatedItem.Name.Should().Be("MyItemNewName");
             // Now validate the updated item in the database matches
-            var expenseItems = await CallContextMethod<List<ExpenseItem>>("GetAllExpenseItems");
-            var newItem = expenseItems.SingleOrDefault(e => e.Name.Equals("MyItemNewName"));
+            var expenseItems = await CallContextMethod<IList<ExpenseItem>>("GetAllExpenseItems");
+            var newItem = expenseItems.ToList().SingleOrDefault(e => e.Name.Equals("MyItemNewName"));
             newItem.Should().NotBeNull();
             newItem.UnitCost.Should().Be(5.68);
             newItem.Units.Should().Be(5);
@@ -324,8 +329,8 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             };
             var deletedItem = await SendAsync(deleteCommand);
             deletedItem.Name.Should().Be("MyItem");
-            var expenseItems = await CallContextMethod<List<ExpenseItem>>("GetAllExpenseItems");
-            var newItem = expenseItems.SingleOrDefault(e => e.Name.Equals("MyItemNewName"));
+            var expenseItems = await CallContextMethod<IList<ExpenseItem>>("GetAllExpenseItems");
+            var newItem = expenseItems.ToList().SingleOrDefault(e => e.Name.Equals("MyItemNewName"));
             newItem.Should().BeNull();
         }
 
@@ -333,8 +338,9 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
         public async Task<int> GetMockParentId()
         {
             // Only create a new item if it does not already exist
-            var capItems = await CallContextMethod<List<CapitalItem>>("GetAllCapitalItems");
-            var newItem = capItems.SingleOrDefault(ci => ci.Name.Equals("TestItem"));
+            // Note to self: Return type of CallConextMethod MUST match that of the function, otherwise you get a weird NullReferenceException
+            var capItems = await CallContextMethod<IList<CapitalItem>>("GetAllCapitalItems");
+            var newItem = capItems.ToList().SingleOrDefault(ci => ci.Name.Equals("TestItem"));
             if (newItem == null)
             {
                 var capItem = new CapitalItem
@@ -342,11 +348,12 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     Name = "TestItem",
                     UsageCount = 1,
                     Cost = 25.67,
-                    DatePurchased = DateTime.Today
+                    DatePurchased = DateTime.Today,
+                    Description = "A simple one!"
                 };
                 await AddAsync<CapitalItem>(capItem);
-                capItems = await CallContextMethod<List<CapitalItem>>("GetAllCapitalItems");
-                newItem = capItems.SingleOrDefault(ci => ci.Name.Equals("TestItem"));
+                capItems = await CallContextMethod<IList<CapitalItem>>("GetAllCapitalItems");
+                newItem = capItems.ToList().SingleOrDefault(ci => ci.Name.Equals("TestItem"));
             }
             return newItem.Id;
         }

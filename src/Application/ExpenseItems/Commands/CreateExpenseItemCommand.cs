@@ -24,10 +24,13 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
             _mapper = mapper;
         }
 
-        // TODO
         public async Task<ExpenseItem> Handle(CreateExpenseItemCommand request, CancellationToken cancellationToken)
         {
-            return null;
+            var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+            ExpenseItem newItem = _mapper.Map<ExpenseItem>(request.ExpenseItem);
+            context.AddExpenseItem(newItem);
+            await context.SaveChangesAsync(cancellationToken);
+            return newItem;
         }
     }
 }

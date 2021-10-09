@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace bike_selling_app.Application.ExpenseItems.Commands
 {
@@ -25,10 +26,22 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
             _mapper = mapper;
         }
 
-        // TODO
         public async Task<ExpenseItem> Handle(UpdateExpenseItemCommand request, CancellationToken cancellationToken)
         {
-            return null;
+            var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+            // Get the current item from the database
+            var allExpenseItems = await context.GetAllExpenseItems();
+            var currentItem = allExpenseItems.SingleOrDefault(ei => ei.Id == request.ExpenseItemId);
+            // Now update all fields based on passed in entity
+            var newItem = _mapper.Map<ExpenseItem>(request.ExpenseItem);
+            currentItem.Name = newItem.Name;
+            currentItem.Description = newItem.Description;
+            currentItem.ParentItemId = newItem.ParentItemId;
+            currentItem.UnitCost = newItem.UnitCost;
+            currentItem.Units = newItem.Units;
+            currentItem.DatePurchased = newItem.DatePurchased;
+            await context.SaveChangesAsync(cancellationToken);
+            return currentItem;
         }
     }
 }

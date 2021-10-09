@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 namespace bike_selling_app.Infrastructure.Persistence
 {
@@ -22,6 +23,9 @@ namespace bike_selling_app.Infrastructure.Persistence
                     DatePurchased = System.DateTime.Today
                 };
                 context.Bikes.Add(b);
+                // This is required after every entity is added, we are not guranteed the same context instance throughout this file? Was having
+                // issues where the bike could not be found in the project below
+                await context.SaveChangesAsync();
             }
             // Add a test project
             if (context.Projects.SingleOrDefault(p => p.Title.Equals("Test Project")) == null)
@@ -35,8 +39,8 @@ namespace bike_selling_app.Infrastructure.Persistence
                     Bikes = new List<Bike>() { bike }
                 };
                 context.Projects.Add(p);
+                await context.SaveChangesAsync();
             }
-            await context.SaveChangesAsync();
         }
     }
 }

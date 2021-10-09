@@ -31,7 +31,6 @@ namespace bike_selling_app.Infrastructure.Persistence
         public DbSet<Project> Projects { get; set; }
         public DbSet<RevenueItem> RevenueItems { get; set; }
         public DbSet<ExpenseItem> ExpenseItems { get; set; }
-        public DbSet<UnusedItem> UnusedItems { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -143,10 +142,6 @@ namespace bike_selling_app.Infrastructure.Persistence
         public async Task<IList<RevenueItem>> GetAllRevenueItems()
         {
             return await this.RevenueItems.Include(r => r.ExpenseItems).ToListAsync();
-        }
-        public async Task<IList<UnusedItem>> GetAllUnusedItems()
-        {
-            return await this.UnusedItems.Include(u => u.ExpenseItems).ToListAsync();
         }
         public async Task<IList<ExpenseItem>> GetAllExpenseItems()
         {

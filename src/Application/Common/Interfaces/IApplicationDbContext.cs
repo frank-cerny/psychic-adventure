@@ -21,7 +21,6 @@ namespace bike_selling_app.Application.Common.Interfaces
         Task<IList<CapitalItem>> GetAllCapitalItems();
         Task<IList<NonCapitalItem>> GetAllNonCapitalItems();
         Task<IList<RevenueItem>> GetAllRevenueItems();
-        Task<IList<UnusedItem>> GetAllUnusedItems();
         Task<IList<ExpenseItem>> GetAllExpenseItems();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
