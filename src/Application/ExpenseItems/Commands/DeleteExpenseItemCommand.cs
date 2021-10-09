@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace bike_selling_app.Application.ExpenseItems.Commands
 {
@@ -24,10 +25,14 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
             _mapper = mapper;
         }
 
-        // TODO
         public async Task<ExpenseItem> Handle(DeleteExpenseItemCommand request, CancellationToken cancellationToken)
         {
-            return null;
+            var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+            var allExpenseItems = await context.GetAllExpenseItems();
+            var itemToDelete = allExpenseItems.SingleOrDefault(e => e.Id == request.ExpenseItemId);
+            context.RemoveExpenseItem(itemToDelete);
+            await context.SaveChangesAsync(cancellationToken);
+            return itemToDelete;
         }
     }
 }

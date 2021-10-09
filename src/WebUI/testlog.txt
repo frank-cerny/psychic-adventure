@@ -639,3 +639,58 @@ SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", 
 FROM "Bikes" AS "b"
 2021-09-11 09:53:50.399 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 1049.6020ms
 2021-09-11 09:53:54.575 -04:00 [INF] Application is shutting down...
+2021-10-09 16:37:59.056 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-10-09 16:37:59.411 -04:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-10-09 16:37:59.434 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-10-09 16:37:59.459 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-10-09 16:37:59.490 -04:00 [INF] Applying migration '20211009004113_adding_expense_item'.
+2021-10-09 16:37:59.585 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "NonCapitalItems" RENAME COLUMN "Cost" TO "UnitCost";
+2021-10-09 16:37:59.592 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ExpenseItem" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_ExpenseItem" PRIMARY KEY AUTOINCREMENT,
+    "UnitCost" REAL NOT NULL,
+    "Units" INTEGER NOT NULL,
+    "CapitalItemId" INTEGER NULL,
+    "NonCapitalItemId" INTEGER NULL,
+    "RevenueItemId" INTEGER NULL,
+    "Name" TEXT NOT NULL,
+    "Description" TEXT NULL,
+    "DatePurchased" TEXT NOT NULL,
+    CONSTRAINT "FK_ExpenseItem_CapitalItems_CapitalItemId" FOREIGN KEY ("CapitalItemId") REFERENCES "CapitalItems" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_ExpenseItem_NonCapitalItems_NonCapitalItemId" FOREIGN KEY ("NonCapitalItemId") REFERENCES "NonCapitalItems" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_ExpenseItem_RevenueItems_RevenueItemId" FOREIGN KEY ("RevenueItemId") REFERENCES "RevenueItems" ("Id") ON DELETE RESTRICT
+);
+2021-10-09 16:37:59.598 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItem_CapitalItemId" ON "ExpenseItem" ("CapitalItemId");
+2021-10-09 16:37:59.602 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItem_NonCapitalItemId" ON "ExpenseItem" ("NonCapitalItemId");
+2021-10-09 16:37:59.607 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItem_RevenueItemId" ON "ExpenseItem" ("RevenueItemId");
+2021-10-09 16:37:59.624 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20211009004113_adding_expense_item', '5.0.5');
+2021-10-09 16:37:59.901 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-10-09 16:37:59.989 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-10-09 16:38:00.100 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-10-09 16:38:00.246 -04:00 [INF] Creating key {d390294c-91df-46b7-ba3f-ce363886857b} with creation date 2021-10-09 20:38:00Z, activation date 2021-10-09 20:38:00Z, and expiration date 2022-01-07 20:38:00Z.
+2021-10-09 16:38:00.272 -04:00 [INF] Writing data to file 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys\key-d390294c-91df-46b7-ba3f-ce363886857b.xml'.
+2021-10-09 16:38:00.624 -04:00 [INF] Now listening on: https://localhost:5001
+2021-10-09 16:38:00.627 -04:00 [INF] Now listening on: http://localhost:5000
+2021-10-09 16:38:00.629 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-10-09 16:38:00.631 -04:00 [INF] Hosting environment: Development
+2021-10-09 16:38:00.632 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-10-09 16:38:08.227 -04:00 [INF] Application is shutting down...
