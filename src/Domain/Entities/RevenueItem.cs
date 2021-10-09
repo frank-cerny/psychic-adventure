@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace bike_selling_app.Domain.Entities
 {
@@ -10,5 +11,6 @@ namespace bike_selling_app.Domain.Entities
         public bool IsPending { get; set; }
         public double Weight { get; set; }
         public DateTime DateSold { get; set; }
+        public IList<ExpenseItem> ExpenseItems { get; set; }
     }
 }

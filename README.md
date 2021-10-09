@@ -22,7 +22,7 @@ Run `dotnet-outdated`
 
 # Process: Creating a new Input/Output Set (with GraphQL)
 
-1. Create entity(s) (mapped with Entity Framework)
+1. Create entity(s) (this includes the EF configuration if required)
 2. Create GraphQL Input Type (map to entities) (similar to a response DTO)
 3. Create GraphQL Output Type (map to entities) (similar to a request DTO)
 4. Scaffold command/query
