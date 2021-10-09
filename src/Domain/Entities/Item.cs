@@ -2,7 +2,7 @@ using System;
 
 namespace bike_selling_app.Domain.Entities
 {
-    public abstract class Item
+    public class Item
     {
         public int Id { get; set; }
         public string Name { get; set; }

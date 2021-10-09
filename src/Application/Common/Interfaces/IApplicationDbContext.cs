@@ -11,6 +11,8 @@ namespace bike_selling_app.Application.Common.Interfaces
         void RemoveBike(Bike bike);
         void AddProject(Project project);
         void RemoveProject(Project project);
+        void AddExpenseItem(ExpenseItem item);
+        void RemoveExpenseItem(ExpenseItem item);
         Task<IList<Bike>> GetAllBikes();
         Task<Project> GetProjectById(int id);
         Task<IList<Project>> GetAllProjects();

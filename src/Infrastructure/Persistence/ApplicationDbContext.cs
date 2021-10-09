@@ -30,6 +30,7 @@ namespace bike_selling_app.Infrastructure.Persistence
         public DbSet<NonCapitalItem> NonCapitalItems { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<RevenueItem> RevenueItems { get; set; }
+        public DbSet<ExpenseItem> ExpenseItems { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -95,6 +96,16 @@ namespace bike_selling_app.Infrastructure.Persistence
         public void RemoveProject(Project project)
         {
             this.Projects.Remove(project);
+        }
+
+        public void AddExpenseItem(ExpenseItem expenseItem)
+        {
+            this.ExpenseItems.Add(expenseItem);
+        }
+
+        public void RemoveExpenseItem(ExpenseItem expenseItem)
+        {
+            this.ExpenseItems.Remove(expenseItem);
         }
 
         public async Task<IList<Bike>> GetAllBikes()
