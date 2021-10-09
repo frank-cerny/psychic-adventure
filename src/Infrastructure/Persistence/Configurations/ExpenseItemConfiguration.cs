@@ -8,9 +8,10 @@ namespace bike_selling_app.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<ExpenseItem> builder)
         {
-            builder.Property(nci => nci.UnitCost).IsRequired();
-            builder.Property(nci => nci.Name).HasMaxLength(100).IsRequired();
-            builder.Property(nci => nci.Description).HasMaxLength(250);
+            builder.Property(e => e.UnitCost).IsRequired();
+            builder.Property(e => e.Name).HasMaxLength(100).IsRequired();
+            builder.Property(e => e.Description).HasMaxLength(250);
+            builder.HasIndex(e => new {e.Name, e.DatePurchased}).IsUnique();
         }
     }
 }

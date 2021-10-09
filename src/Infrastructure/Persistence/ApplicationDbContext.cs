@@ -31,6 +31,7 @@ namespace bike_selling_app.Infrastructure.Persistence
         public DbSet<Project> Projects { get; set; }
         public DbSet<RevenueItem> RevenueItems { get; set; }
         public DbSet<ExpenseItem> ExpenseItems { get; set; }
+        public DbSet<UnusedItem> UnusedItems { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -108,6 +109,15 @@ namespace bike_selling_app.Infrastructure.Persistence
             this.ExpenseItems.Remove(expenseItem);
         }
 
+        public void AddCapitalItem(CapitalItem item)
+        {
+            this.CapitalItems.Add(item);
+        }
+        public void RemoveCapitalItem(CapitalItem item)
+        {
+            this.CapitalItems.Remove(item);
+        }
+
         public async Task<IList<Bike>> GetAllBikes()
         {
             return await this.Bikes.ToListAsync();
@@ -121,6 +131,26 @@ namespace bike_selling_app.Infrastructure.Persistence
         public Task<Project> GetProjectById(int id)
         {
             return Task.FromResult(this.Projects.Include(p => p.Bikes).SingleOrDefault(p => p.Id == id));
+        }
+        public async Task<IList<CapitalItem>> GetAllCapitalItems()
+        {
+            return await this.CapitalItems.Include(c => c.ExpenseItems).ToListAsync();
+        }
+        public async Task<IList<NonCapitalItem>> GetAllNonCapitalItems()
+        {
+            return await this.NonCapitalItems.Include(nc => nc.ExpenseItems).ToListAsync();
+        }
+        public async Task<IList<RevenueItem>> GetAllRevenueItems()
+        {
+            return await this.RevenueItems.Include(r => r.ExpenseItems).ToListAsync();
+        }
+        public async Task<IList<UnusedItem>> GetAllUnusedItems()
+        {
+            return await this.UnusedItems.Include(u => u.ExpenseItems).ToListAsync();
+        }
+        public async Task<IList<ExpenseItem>> GetAllExpenseItems()
+        {
+            return await this.ExpenseItems.ToListAsync();
         }
     }
 

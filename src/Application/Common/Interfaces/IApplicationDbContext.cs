@@ -13,9 +13,16 @@ namespace bike_selling_app.Application.Common.Interfaces
         void RemoveProject(Project project);
         void AddExpenseItem(ExpenseItem item);
         void RemoveExpenseItem(ExpenseItem item);
+        void AddCapitalItem(CapitalItem item);
+        void RemoveCapitalItem(CapitalItem item);
         Task<IList<Bike>> GetAllBikes();
         Task<Project> GetProjectById(int id);
         Task<IList<Project>> GetAllProjects();
+        Task<IList<CapitalItem>> GetAllCapitalItems();
+        Task<IList<NonCapitalItem>> GetAllNonCapitalItems();
+        Task<IList<RevenueItem>> GetAllRevenueItems();
+        Task<IList<UnusedItem>> GetAllUnusedItems();
+        Task<IList<ExpenseItem>> GetAllExpenseItems();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

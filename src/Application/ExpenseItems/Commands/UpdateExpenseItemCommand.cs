@@ -10,7 +10,8 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
 {
     public class UpdateExpenseItemCommand : IRequest<ExpenseItem>
     {
-        public ExpenseItemDto ExpenseItem { get; set; }
+        public ExpenseItemRequestDto ExpenseItem { get; set; }
+        public int ExpenseItemId { get; set; }
     }
 
     public class UpdateExpenseItemCommandHandler : IRequestHandler<UpdateExpenseItemCommand, ExpenseItem>

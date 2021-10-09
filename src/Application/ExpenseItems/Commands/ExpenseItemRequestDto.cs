@@ -2,9 +2,9 @@ using System;
 using AutoMapper;
 using bike_selling_app.Domain.Entities;
 
-namespace bike_selling_app.Application.ExpenseItems
+namespace bike_selling_app.Application.ExpenseItems.Commands
 {
-    public class ExpenseItemDto
+    public class ExpenseItemRequestDto
     {
         public double UnitCost { get; set; }
         public int Units { get; set; }
@@ -18,7 +18,7 @@ namespace bike_selling_app.Application.ExpenseItems
         // This creates a custom mapping where 1 -> 1 mapping is not available
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ExpenseItemDto, ExpenseItem>()
+            profile.CreateMap<ExpenseItemRequestDto, ExpenseItem>()
                 .ForMember(b => b.DatePurchased, opt => opt.MapFrom(dto => DateTime.Parse(dto.DatePurchased)));
         }
     }

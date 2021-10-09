@@ -84,15 +84,11 @@ public class Testing
         return await mediator.Send(request);
     }
 
-    public static async Task AddAsync<TEntity>(TEntity entity)
-        where TEntity : class
+    public static async Task AddAsync<TEntity>(TEntity entity) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
-
         var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
         context.Add(entity);
-
         await context.SaveChangesAsync();
     }
 
