@@ -11,7 +11,9 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
         public int Units { get; set; }
         public string Name { get; set; }
         public string Description { get; set; } = "";
-        public int ParentItemId { get; set; }
+        public int CapitalItemId { get; set; }
+        public int NonCapitalItemId { get; set; }
+        public int RevenueItemId { get; set; }
 
         // Date will be of the form "mmddyyyy" (validated in the validator)
         public string DatePurchased { get; set; }

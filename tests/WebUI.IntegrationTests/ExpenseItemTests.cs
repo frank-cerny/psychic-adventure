@@ -111,7 +111,6 @@ namespace bike_selling_app.WebUI.IntegrationTests
                 Query = @"mutation deleteExpenseItem($id: Int!) {
                             removeExpenseItem(id: $id) {
                                 Name
-                                parentItemId
                             }
                         }",
                 OperationName = "Remove expense item",
@@ -122,7 +121,20 @@ namespace bike_selling_app.WebUI.IntegrationTests
             };
             var deleteMutationResponse = await graphClient.SendMutationAsync<RemoveExpenseItemType>(deleteMutation);
             deleteMutationResponse.Data.removeExpenseItem.Name.Should().Be("Postage");
-            deleteMutationResponse.Data.removeExpenseItem.ParentItemId.Should().Be(10);
+            // Now run a get query to ensure everything took hold
+            var query = new GraphQLHttpRequest
+            {
+                Query = @"query TestQuery {
+                            expenseItems {
+                                name
+                                unitCost
+                            }
+                        }",
+                OperationName = "Test Operation",
+                Variables = new object { }
+            };
+            var queryResponse = await graphClient.SendQueryAsync<ExpenseItemCollectionType>(query);
+            queryResponse.Data.ExpenseItems.Should().HaveCount(0);
         }
 
         [Fact]

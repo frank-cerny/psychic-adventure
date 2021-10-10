@@ -26,6 +26,7 @@ namespace bike_selling_app.Infrastructure.Persistence
         }
 
         public DbSet<Bike> Bikes { get; set; }
+        // We add tables for all derived classes of Item, even though a single table with a discriminiator will be used. This is all syntatic sugar
         public DbSet<CapitalItem> CapitalItems { get; set; }
         public DbSet<NonCapitalItem> NonCapitalItems { get; set; }
         public DbSet<Project> Projects { get; set; }

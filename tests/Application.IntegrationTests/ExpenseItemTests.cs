@@ -27,7 +27,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);
@@ -37,7 +36,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 UnitCost = 5.67,
                 Units = 1,
                 DatePurchased = "07-11-2021",
-                ParentItemId = parentId
             };
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             createCommand.ExpenseItem.Name = "MyItem2";
@@ -60,7 +58,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "077-11-2021",
-                    ParentItemId = parentId
                 }
             };
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
@@ -102,7 +99,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);
@@ -115,7 +111,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             newItem.Units.Should().Be(1);
             CultureInfo culture = new CultureInfo("en-US");
             newItem.DatePurchased.ToShortDateString().Should().Be("7/11/2021");
-            newItem.ParentItemId.Should().Be(parentId);
         }
 
         // Update Tests
@@ -132,7 +127,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);
@@ -144,7 +138,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.68,
                     Units = 5,
                     DatePurchased = "07-15-2021",
-                    ParentItemId = parentId
                 },
                 ExpenseItemId = -1
             };
@@ -165,7 +158,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);
@@ -175,7 +167,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 UnitCost = 5.68,
                 Units = 1,
                 DatePurchased = "07-11-2021",
-                ParentItemId = parentId
             };
             var item2 = await SendAsync(createCommand);
             // Now attempt to update item 2 with the same name as item2!
@@ -187,7 +178,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.68,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 },
                 ExpenseItemId = item2.Id
             };
@@ -251,7 +241,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);
@@ -263,7 +252,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.68,
                     Units = 5,
                     DatePurchased = "07-15-2021",
-                    ParentItemId = parentId
                 },
                 ExpenseItemId = item.Id
             };
@@ -277,7 +265,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             newItem.Units.Should().Be(5);
             CultureInfo culture = new CultureInfo("en-US");
             newItem.DatePurchased.ToShortDateString().Should().Be("7/15/2021");
-            newItem.ParentItemId.Should().Be(parentId);
         }
 
         // Delete Tests
@@ -294,7 +281,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);
@@ -319,7 +305,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     Units = 1,
                     DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
                 }
             };
             var item = await SendAsync(createCommand);

@@ -8,5 +8,7 @@ namespace bike_selling_app.Domain.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime DatePurchased { get; set; }
+        // Discriminator value
+        public string ItemType { get; set;}
     }
 }

@@ -14,7 +14,9 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
             Field(e => e.Units, nullable: false);
             Field(e => e.Description);
             Field(e => e.DatePurchased);
-            Field(e => e.ParentItemId);
+            Field(e => e.CapitalItemId);
+            Field(e => e.NonCapitalItemId);
+            Field(e => e.RevenueItemId);
         }
     }
 }

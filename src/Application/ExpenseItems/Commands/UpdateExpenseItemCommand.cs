@@ -36,7 +36,9 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
             var newItem = _mapper.Map<ExpenseItem>(request.ExpenseItem);
             currentItem.Name = newItem.Name;
             currentItem.Description = newItem.Description;
-            currentItem.ParentItemId = newItem.ParentItemId;
+            currentItem.CapitalItemId = newItem.CapitalItemId;
+            currentItem.NonCapitalItemId = newItem.NonCapitalItemId;
+            currentItem.RevenueItemId = newItem.RevenueItemId;
             currentItem.UnitCost = newItem.UnitCost;
             currentItem.Units = newItem.Units;
             currentItem.DatePurchased = newItem.DatePurchased;

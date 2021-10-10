@@ -41,6 +41,18 @@ namespace bike_selling_app.Infrastructure.Persistence
                 context.Projects.Add(p);
                 await context.SaveChangesAsync();
             }
+            // Add a test capital item
+            if (context.CapitalItems.SingleOrDefault(c => c.Name.Equals("TestItem")) == null)
+            {
+                var item = new CapitalItem
+                {
+                    Name = "TestItem",
+                    Cost = 4.75,
+                    Description = "MyDescription!"
+                };
+                context.CapitalItems.Add(item);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
