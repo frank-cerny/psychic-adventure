@@ -70,25 +70,25 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
         }
 
-        [Test]
-        public async Task ShouldRequireValidParentItemIdOnCreate()
-        {
-            var parentId = await GetMockParentId();
-            var createCommand = new CreateExpenseItemCommand
-            {
-                ExpenseItem = new ExpenseItemRequestDto
-                {
-                    Name = "MyItem",
-                    UnitCost = 5.67,
-                    Units = 1,
-                    DatePurchased = "07-11-2021",
-                    ParentItemId = -1
-                }
-            };
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            createCommand.ExpenseItem.ParentItemId = parentId;
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
-        }
+        // [Test]
+        // public async Task ShouldRequireValidParentItemIdOnCreate()
+        // {
+        //     var parentId = await GetMockParentId();
+        //     var createCommand = new CreateExpenseItemCommand
+        //     {
+        //         ExpenseItem = new ExpenseItemRequestDto
+        //         {
+        //             Name = "MyItem",
+        //             UnitCost = 5.67,
+        //             Units = 1,
+        //             DatePurchased = "07-11-2021",
+        //             ParentItemId = -1
+        //         }
+        //     };
+        //     FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
+        //     createCommand.ExpenseItem.ParentItemId = parentId;
+        //     FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
+        // }
 
         [Test]
         public async Task ShouldCreateExpenseItem()
@@ -204,40 +204,40 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
         }
 
-        [Test]
-        public async Task ShouldRequireValidParentItemIdOnUpdate()
-        {
-            var parentId = await GetMockParentId();
-            var createCommand = new CreateExpenseItemCommand
-            {
-                ExpenseItem = new ExpenseItemRequestDto
-                {
-                    Name = "MyItem",
-                    UnitCost = 5.67,
-                    Units = 1,
-                    DatePurchased = "07-11-2021",
-                    ParentItemId = parentId
-                }
-            };
-            var item = await SendAsync(createCommand);
-            // Send an invalid parent id the first time
-            var updateCommand = new UpdateExpenseItemCommand
-            {
-                ExpenseItem = new ExpenseItemRequestDto
-                {
-                    Name = "MyItemNewName",
-                    UnitCost = 5.68,
-                    Units = 5,
-                    DatePurchased = "07-15-2021",
-                    ParentItemId = -1
-                },
-                ExpenseItemId = item.Id
-            };
-            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
-            updateCommand.ExpenseItem.ParentItemId = parentId;
-            // Parent id is valid and should work now
-            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
-        }
+        // [Test]
+        // public async Task ShouldRequireValidParentItemIdOnUpdate()
+        // {
+        //     var parentId = await GetMockParentId();
+        //     var createCommand = new CreateExpenseItemCommand
+        //     {
+        //         ExpenseItem = new ExpenseItemRequestDto
+        //         {
+        //             Name = "MyItem",
+        //             UnitCost = 5.67,
+        //             Units = 1,
+        //             DatePurchased = "07-11-2021",
+        //             ParentItemId = parentId
+        //         }
+        //     };
+        //     var item = await SendAsync(createCommand);
+        //     // Send an invalid parent id the first time
+        //     var updateCommand = new UpdateExpenseItemCommand
+        //     {
+        //         ExpenseItem = new ExpenseItemRequestDto
+        //         {
+        //             Name = "MyItemNewName",
+        //             UnitCost = 5.68,
+        //             Units = 5,
+        //             DatePurchased = "07-15-2021",
+        //             ParentItemId = -1
+        //         },
+        //         ExpenseItemId = item.Id
+        //     };
+        //     FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
+        //     updateCommand.ExpenseItem.ParentItemId = parentId;
+        //     // Parent id is valid and should work now
+        //     FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
+        // }
 
         [Test]
         public async Task ShouldUpdateExpenseItem()

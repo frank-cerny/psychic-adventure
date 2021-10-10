@@ -3,6 +3,7 @@ using GraphQL;
 using bike_selling_app.Application.Common.GraphQL.Types;
 using bike_selling_app.Application.Bikes.Commands;
 using bike_selling_app.Application.Projects.Commands;
+using bike_selling_app.Application.ExpenseItems.Commands;
 using bike_selling_app.Domain.Entities;
 using MediatR;
 
@@ -12,6 +13,8 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
     {
         public RootMutation(ISender mediator)
         {
+
+            // Bikes
             FieldAsync<BikeType>(
             "addBike",
             arguments: new QueryArguments(
@@ -28,6 +31,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                 // This call returns a bike object, which is automatically converted to BikeType by this field
                 return await mediator.Send<Bike>(command);
             });
+
             FieldAsync<BikeType>(
             "removeBike",
             arguments: new QueryArguments(
@@ -41,6 +45,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                 };
                 return await mediator.Send<Bike>(command);
             });
+
             FieldAsync<BikeType>(
             "updateBike",
             arguments: new QueryArguments(
@@ -59,6 +64,8 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                 // This call returns a bike object, which is automatically converted to BikeType by this field
                 return await mediator.Send<Bike>(command);
             });
+
+            // Projects
             FieldAsync<ProjectType>(
                 "addProject",
                 arguments: new QueryArguments(
@@ -73,6 +80,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                     };
                     return await mediator.Send(command);
                 });
+
             FieldAsync<ProjectType>(
                 "removeProject",
                 arguments: new QueryArguments(
@@ -87,6 +95,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                     };
                     return await mediator.Send(command);
                 });
+
             FieldAsync<ProjectType>(
                 "updateProject",
                 arguments: new QueryArguments(
@@ -103,6 +112,55 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                         projectId = projectId
                     };
                     return await mediator.Send(updateCommand);
+                });
+
+            // Expense Items
+            FieldAsync<ExpenseItemType>(
+                "addExpenseItem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<ExpenseItemInputType>> { Name = "expenseItem"}
+                ),
+                resolve: async context =>
+                {
+                    var expenseItem = context.GetArgument<ExpenseItemRequestDto>("expenseItem");
+                    var createCommand = new CreateExpenseItemCommand
+                    {
+                        ExpenseItem = expenseItem
+                    };
+                    return await mediator.Send(createCommand);
+                });
+
+            FieldAsync<ExpenseItemType>(
+                "updateExpenseItem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<ExpenseItemInputType>> { Name = "expenseItem"},
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
+                ),
+                resolve: async context =>
+                {
+                    var expenseItem = context.GetArgument<ExpenseItemRequestDto>("expenseItem");
+                    var expenseItemId = context.GetArgument<int>("id");
+                    var updateCommand = new UpdateExpenseItemCommand
+                    {
+                        ExpenseItem = expenseItem,
+                        ExpenseItemId = expenseItemId
+                    };
+                    return await mediator.Send(updateCommand);
+                });
+
+            FieldAsync<ExpenseItemType>(
+                "removeExpenseItem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
+                ),
+                resolve: async context =>
+                {
+                    var expenseItemId = context.GetArgument<int>("id");
+                    var deleteCommand = new DeleteExpenseItemCommand
+                    {
+                        ExpenseItemId = expenseItemId
+                    };
+                    return await mediator.Send(deleteCommand);
                 });
         }
     }

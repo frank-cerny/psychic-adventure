@@ -30,6 +30,15 @@ namespace bike_selling_app.Application.Common.GraphQL.Queries
                     return await dbContext.GetAllProjects();
                 }
             );
+            // This field is generally only going to be used for testing purposes
+            FieldAsync<ListGraphType<ExpenseItemType>, IList<ExpenseItem>> (
+                name: "expenseItems",
+                resolve: async context => 
+                {
+                    var dbContext = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                    return await dbContext.GetAllExpenseItems();
+                }
+            );
         }
     }
 }

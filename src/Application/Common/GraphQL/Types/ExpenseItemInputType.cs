@@ -12,7 +12,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
             Field<NonNullGraphType<StringGraphType>>("name");
             Field<StringGraphType>("description");
             Field<StringGraphType>("datePurchased");
-            Field<NonNullGraphType<IntGraphType>>("parentItemId");
+            Field<IntGraphType>("parentItemId");
         }
     }
 }

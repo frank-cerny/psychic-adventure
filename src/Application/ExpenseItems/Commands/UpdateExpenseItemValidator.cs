@@ -17,7 +17,7 @@ namespace bike_selling_app.Application.ExpenseItems.Commands
         {
             _context = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             RuleFor(req => req.ExpenseItem.DatePurchased).Must(HasValidDateString).WithMessage("Invalid date string. Date string must be a valid date.");
-            RuleFor(req => req.ExpenseItem.ParentItemId).MustAsync(HasValidParentItemId).WithMessage("Expense item must have a valid parent id");
+            // RuleFor(req => req.ExpenseItem.ParentItemId).MustAsync(HasValidParentItemId).WithMessage("Expense item must have a valid parent id");
             RuleFor(req => req).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all expense items");
             RuleFor(req => req.ExpenseItemId).MustAsync(HasValidExpenseItemId).WithMessage("Update command must supply the id of an existing expense item");
         }

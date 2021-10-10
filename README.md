@@ -31,3 +31,8 @@ Run `dotnet-outdated`
 7. Add query/mutation in root query/mutation 
 8. Write integration tests for commands/queries
 9. Write full system tests for overall GraphQL queries/mutations
+
+# Items of Note
+
+1. Most entities will have to have validators updated to check specifically for null values that align with key constraints
+2. Expense Items may have to have the parent id made optional, depending if I want to force parent items to use the expense command to get things created (or just rely on EF)
