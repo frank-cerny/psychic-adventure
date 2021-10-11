@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace bike_selling_app.Application.NonCapitalItems.Commands
 {
@@ -23,16 +24,24 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             _scopeFactory = scopeFactory;
             _mapper = mapper;
         }
-
-        // TODO 
         public async Task<NonCapitalItem> Handle(CreateNonCapitalItemCommand request, CancellationToken cancellationToken)
         {
-            // var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
-            // ExpenseItem newItem = _mapper.Map<ExpenseItem>(request.ExpenseItem);
-            // context.AddExpenseItem(newItem);
-            // await context.SaveChangesAsync(cancellationToken);
-            // return newItem;
-            return null;
+            var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+            NonCapitalItem newItem = _mapper.Map<NonCapitalItem>(request.NonCapitalItem);
+            // Add expense items as well (all items exist based on validator)
+            var expenseItems = await context.GetAllExpenseItems();
+            foreach (int id in request.NonCapitalItem.ExpenseItemIds)
+            {
+                // Only add the id once
+                if (!newItem.ExpenseItems.Select(ei => ei.Id).ToList().Contains(id))
+                {
+                    var expenseItem = expenseItems.SingleOrDefault(ei => ei.Id == id);
+                    newItem.ExpenseItems.Add(expenseItem);
+                }
+            }
+            context.AddNonCapitalItem(newItem);
+            await context.SaveChangesAsync(cancellationToken);
+            return newItem;
         }
     }
 }

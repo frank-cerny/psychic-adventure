@@ -68,18 +68,20 @@ namespace bike_selling_app.WebUI.IntegrationTests
                             addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
                                 name
                                 unitCost
-                                units
+                                unitsPurchased
+                                unitsRemaining
                                 description
                             }
                         }",
                 OperationName = "Add NonCapitalItem",
                 Variables = new
                 {
-                    expenseItem = new
+                    nonCapitalItem = new
                     {
                         name = "Brake Cable",
                         unitCost = 5.67,
-                        units = 5,
+                        unitsPurchased = 5,
+                        unitsRemaining = 5,
                         datePurchased = "07-15-2021",
                         expenseItemIds = new List<int>() { mutationResponse.Data.addExpenseItem.Id }
                     }
@@ -118,18 +120,20 @@ namespace bike_selling_app.WebUI.IntegrationTests
                             addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
                                 name
                                 unitCost
-                                units
+                                unitsPurchased
+                                unitsRemaining
                                 description
                             }
                         }",
                 OperationName = "Add NonCapitalItem",
                 Variables = new
                 {
-                    expenseItem = new
+                    nonCapitalItem = new
                     {
                         name = "Brake Cable",
                         unitCost = 5.67,
-                        units = 5,
+                        unitsPurchased = 5,
+                        unitsRemaining = 5,
                         datePurchased = "07-15-2021",
                     }
                 }
@@ -179,18 +183,20 @@ namespace bike_selling_app.WebUI.IntegrationTests
                             addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
                                 name
                                 unitCost
-                                units
+                                unitsPurchased
+                                unitsRemaining
                                 description
                             }
                         }",
                 OperationName = "Add NonCapitalItem",
                 Variables = new
                 {
-                    expenseItem = new
+                    nonCapitalItem = new
                     {
                         name = "Brake Cable",
                         unitCost = 5.67,
-                        units = 5,
+                        unitsPurchased = 5,
+                        unitsRemaining = 5,
                         datePurchased = "07-15-2021",
                     }
                 }
@@ -214,7 +220,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     {
                         name = "Tape",
                         unitCost = 1.25,
-                        units = 2,
+                        unitsPurchased = 7,
+                        unitsRemaining = 3,
                         description = "A new, updated item!",
                         datePurchased = "07-15-2020"
                     }

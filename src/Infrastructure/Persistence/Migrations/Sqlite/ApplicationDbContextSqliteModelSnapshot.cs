@@ -145,8 +145,6 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
 
                     b.HasIndex("NonCapitalItemId");
 
-                    b.HasIndex("RevenueItemId");
-
                     b.HasIndex("Name", "DatePurchased")
                         .IsUnique();
 
@@ -300,17 +298,12 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                     b.HasOne("bike_selling_app.Domain.Entities.CapitalItem", null)
                         .WithMany("ExpenseItems")
                         .HasForeignKey("CapitalItemId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("bike_selling_app.Domain.Entities.NonCapitalItem", null)
                         .WithMany("ExpenseItems")
                         .HasForeignKey("NonCapitalItemId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("bike_selling_app.Domain.Entities.RevenueItem", null)
-                        .WithMany("ExpenseItems")
-                        .HasForeignKey("RevenueItemId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("bike_selling_app.Domain.Entities.NonCapitalItem", b =>
@@ -346,11 +339,6 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                     b.Navigation("NonCapitalItems");
 
                     b.Navigation("RevenueItems");
-                });
-
-            modelBuilder.Entity("bike_selling_app.Domain.Entities.RevenueItem", b =>
-                {
-                    b.Navigation("ExpenseItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,7 +15,7 @@ namespace bike_selling_app.Infrastructure.Persistence.Configurations
             builder.Property(nci => nci.Description).HasMaxLength(250);
             builder.HasMany(nci => nci.ExpenseItems)
                 .WithOne()
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

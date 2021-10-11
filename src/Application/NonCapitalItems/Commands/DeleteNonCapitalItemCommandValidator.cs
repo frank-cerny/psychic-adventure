@@ -21,7 +21,7 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
         public async Task<bool> ShouldHaveValidNonCapitalItemId(int id, CancellationToken cancellationToken)
         {
             var nonCapitalItems = await _context.GetAllNonCapitalItems();
-            return (nonCapitalItems.Count(nci => nci.Id == id) == 0);
+            return (nonCapitalItems.Count(nci => nci.Id == id) != 0);
         }
     }
 }

@@ -200,6 +200,8 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             createCommand.NonCapitalItem.ExpenseItemIds = new List<int>();
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
             createCommand.NonCapitalItem.ExpenseItemIds = new List<int>() { expenseItem.Id };
+            // Must also change the name so that the name/date is unique among all non capital items
+            createCommand.NonCapitalItem.Name = "AnyOtherName!";
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
         }
 
@@ -282,9 +284,9 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             };
             FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.Name = "TestItem6";
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.DatePurchased = "08-09-2021";
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
         }
 
         [Test]
@@ -302,6 +304,15 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 }
             };
             var expenseItem = await SendAsync(createExpenseItemCommand);
+            // Create a second expense item (this will help confirm an update can remove expense items as well)
+            createExpenseItemCommand.ExpenseItem = new ExpenseItemRequestDto
+            {
+                Name = "Tape!",
+                UnitCost = 6.78,
+                Units = 1,
+                DatePurchased = "10-11-2021"
+            };
+            var expenseItemTwo = await SendAsync(createExpenseItemCommand);
             var createCommand = new CreateNonCapitalItemCommand
             {
                 NonCapitalItem = new NonCapitalItemRequestDto
@@ -310,10 +321,12 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
+                    ExpenseItemIds = new List<int>() { expenseItem.Id }
                 }
             };
             var item = await SendAsync(createCommand);
             item.Name.Should().Be("MyItem");
+            item.ExpenseItems.Should().HaveCount(1);
             // Now update the item
             var updateCommand = new UpdateNonCapitalItemCommand
             {
@@ -323,15 +336,16 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 4.45,
                     UnitsPurchased = 5,
                     DatePurchased = "07-11-1987",
-                    ExpenseItemIds = new List<int>() { expenseItem.Id, expenseItem.Id, expenseItem.Id }
+                    ExpenseItemIds = new List<int>() { expenseItemTwo.Id, expenseItemTwo.Id, expenseItemTwo.Id }
                 },
                 NonCapitalItemId = item.Id
             };
             var updatedItem = await SendAsync(updateCommand);
             // Now validate in the database that our item only has a single child
             var allNonCapitalItems = await CallContextMethod<IList<NonCapitalItem>>("GetAllNonCapitalItems");
-            var newItem = allNonCapitalItems.SingleOrDefault(item => item.Name.Equals("MyItem"));
+            var newItem = allNonCapitalItems.SingleOrDefault(item => item.Name.Equals("UpdatedItem!"));
             newItem.ExpenseItems.Should().HaveCount(1);
+            newItem.ExpenseItems[0].Name.Should().Be("Tape!");
         }
 
         [Test]
@@ -360,11 +374,11 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 },
                 NonCapitalItemId = item.Id
             };
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.DatePurchased = "89chfkjhae";
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.DatePurchased = "07-11-2021";
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
+            FluentActions.Invoking(() => SendAsync(updateCommand)).Should().NotThrow<ValidationException>();
         }
 
         [Test]
@@ -534,6 +548,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                     UnitCost = 5.67,
                     UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
+                    ExpenseItemIds = new List<int>() { expenseItem.Id }
                 }
             };
             var item = await SendAsync(createCommand);

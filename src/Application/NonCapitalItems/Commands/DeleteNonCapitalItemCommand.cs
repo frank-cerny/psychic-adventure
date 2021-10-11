@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace bike_selling_app.Application.NonCapitalItems.Commands
 {
@@ -24,15 +25,15 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             _mapper = mapper;
         }
 
-        // TODO 
         public async Task<NonCapitalItem> Handle(DeleteNonCapitalItemCommand request, CancellationToken cancellationToken)
         {
-            // var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
-            // ExpenseItem newItem = _mapper.Map<ExpenseItem>(request.ExpenseItem);
-            // context.AddExpenseItem(newItem);
-            // await context.SaveChangesAsync(cancellationToken);
-            // return newItem;
-            return null;
+            var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+            var allNonCapitalItems = await context.GetAllNonCapitalItems();
+            // The item is guranteet to exist because of the validator
+            var oldNonCapitalItem = allNonCapitalItems.SingleOrDefault(nci => nci.Id == request.NonCapitalItemId);
+            context.RemoveNonCapitalItem(oldNonCapitalItem);
+            await context.SaveChangesAsync(cancellationToken);
+            return oldNonCapitalItem;
         }
     }
 }

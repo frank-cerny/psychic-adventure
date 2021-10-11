@@ -653,6 +653,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             result.DateStarted = null;
             result.DateEnded = null;
             result.Bikes.Should().HaveCount(1);
+            result.NonCapitalItems.Should().HaveCount(1);
             // Also validate changes directly from the database
             var updatedProject = await CallContextMethod<Project>("GetProjectById", result.Id);
             updatedProject.Title.Should().Be("newTitle");

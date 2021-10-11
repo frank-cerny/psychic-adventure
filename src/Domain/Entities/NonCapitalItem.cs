@@ -14,6 +14,6 @@ namespace bike_selling_app.Domain.Entities
         public double UnitCost { get; set; }
         public int UnitsPurchased { get; set; }
         public int UnitsRemaining { get; set; }
-        public IList<ExpenseItem> ExpenseItems { get; set; }
+        public IList<ExpenseItem> ExpenseItems { get; set; } = new List<ExpenseItem>();
     }
 }

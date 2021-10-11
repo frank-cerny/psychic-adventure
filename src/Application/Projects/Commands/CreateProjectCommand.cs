@@ -30,7 +30,6 @@ namespace bike_selling_app.Application.Projects.Commands
         {
             var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             var bikes = await context.GetAllBikes();
-            // TODO - Get all items here
             var newProject = new Project();
             newProject.Description = request.project.Description;
             newProject.Title = request.project.Title;
@@ -52,6 +51,17 @@ namespace bike_selling_app.Application.Projects.Commands
                     // The validator has validated that ALL ids exist in the database
                     var bike = bikes.SingleOrDefault(b => b.Id == id);
                     newProject.Bikes.Add(bike);
+                }
+            }
+            // Add all non-capital items
+            var nonCapitalItems = await context.GetAllNonCapitalItems();
+            foreach (int id in request.project.NonCapitalItemIds)
+            {
+                // Only add the id once
+                if (!newProject.NonCapitalItems.Select(ei => ei.Id).ToList().Contains(id))
+                {
+                    var nonCapitalItem = nonCapitalItems.SingleOrDefault(ei => ei.Id == id);
+                    newProject.NonCapitalItems.Add(nonCapitalItem);
                 }
             }
             // TODO - Add item related ones (capital item, revenue item, non capital item)

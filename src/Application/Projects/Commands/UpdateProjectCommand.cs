@@ -68,6 +68,18 @@ namespace bike_selling_app.Application.Projects.Commands
                     currentProject.Bikes.Add(bike);
                 }
             }
+            // Add all non-capital items
+            currentProject.NonCapitalItems.Clear();
+            var nonCapitalItems = await context.GetAllNonCapitalItems();
+            foreach (int id in request.project.NonCapitalItemIds)
+            {
+                // Only add the id once
+                if (!currentProject.NonCapitalItems.Select(ei => ei.Id).ToList().Contains(id))
+                {
+                    var nonCapitalItem = nonCapitalItems.SingleOrDefault(ei => ei.Id == id);
+                    currentProject.NonCapitalItems.Add(nonCapitalItem);
+                }
+            }
             // TODO - Add item related ones (capital item, revenue item, non capital item)
             await context.SaveChangesAsync(CancellationToken.None);
             // This id ONLY exists once changes are saved (otherwise the id has not been created yet)

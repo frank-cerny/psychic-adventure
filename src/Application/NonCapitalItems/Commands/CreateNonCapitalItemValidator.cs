@@ -16,7 +16,7 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
         {
             _context = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             RuleFor(req => req.NonCapitalItem.DatePurchased).Must(HasValidDateString).WithMessage("Invalid date string. Date string must be a valid date.");
-            RuleFor(req => req.NonCapitalItem).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all expense items");
+            RuleFor(req => req.NonCapitalItem).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all non-capital items");
             RuleFor(req => req.NonCapitalItem.ExpenseItemIds).MustAsync(ShouldHaveValidChildrenIds).WithMessage("All expense item ids must exist");
             RuleFor(req => req.NonCapitalItem).Must(HasAllRequiredValues).WithMessage("Name/Date Purchased cannot be null");
         }
@@ -40,9 +40,9 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
                 return false;
             }
             // Since this is a create, NO other object in the database can have the same name/date (update is a bit different)
-            var expenseItems = await _context.GetAllExpenseItems();
+            var nonCapitalItems = await _context.GetAllNonCapitalItems();
             var shortRequestDatetime = temp.ToShortDateString();
-            return expenseItems.SingleOrDefault(ei => ei.Name.Equals(item.Name) && ei.DatePurchased.ToShortDateString().Equals(shortRequestDatetime)) == null;
+            return nonCapitalItems.SingleOrDefault(ei => ei.Name.Equals(item.Name) && ei.DatePurchased.ToShortDateString().Equals(shortRequestDatetime)) == null;
         }
 
         public bool HasAllRequiredValues(NonCapitalItemRequestDto item)

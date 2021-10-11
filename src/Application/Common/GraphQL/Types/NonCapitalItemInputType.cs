@@ -2,10 +2,10 @@ using GraphQL.Types;
 
 namespace bike_selling_app.Application.Common.GraphQL.Types
 {
-    public class NonCapitalInputItemType : InputObjectGraphType
+    public class NonCapitalItemInputType : InputObjectGraphType
     {
         // This maps directly to ProjectRequestDTO (So GraphQL can automatically map on request)
-        public NonCapitalInputItemType()
+        public NonCapitalItemInputType()
         {
             Field<NonNullGraphType<StringGraphType>>("name");
             Field<StringGraphType>("description");

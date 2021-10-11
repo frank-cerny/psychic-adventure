@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bike_selling_app.Infrastructure.Persistence;
 
 namespace bike_selling_app.Infrastructure.Persistence.Migrations.MySql
 {
     [DbContext(typeof(ApplicationDbContextMySql))]
-    partial class ApplicationDbContextMySqlModelSnapshot : ModelSnapshot
+    [Migration("20211011215219_updating_expense_item_delete_action")]
+    partial class updating_expense_item_delete_action
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -168,7 +168,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
             FieldAsync<NonCapitalItemType>(
                 "addNonCapitalItem",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<NonCapitalInputItemType>> { Name = "nonCapitalItem"}
+                    new QueryArgument<NonNullGraphType<NonCapitalItemInputType>> { Name = "nonCapitalItem"}
                 ),
                 resolve: async context =>
                 {
@@ -183,7 +183,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
             FieldAsync<NonCapitalItemType>(
                 "updateNonCapitalItem",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<NonCapitalInputItemType>> { Name = "nonCapitalItem"},
+                    new QueryArgument<NonNullGraphType<NonCapitalItemInputType>> { Name = "nonCapitalItem"},
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
                 ),
                 resolve: async context =>

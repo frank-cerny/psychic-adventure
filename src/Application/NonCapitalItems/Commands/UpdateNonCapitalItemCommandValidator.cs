@@ -16,7 +16,7 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
         {
             _context = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             RuleFor(req => req.NonCapitalItem.DatePurchased).Must(HasValidDateString).WithMessage("Invalid date string. Date string must be a valid date.");
-            RuleFor(req => req.NonCapitalItem).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all expense items");
+            RuleFor(req => req).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all non-capital items");
             RuleFor(req => req.NonCapitalItem.ExpenseItemIds).MustAsync(ShouldHaveValidChildrenIds).WithMessage("All expense item ids must exist");
             RuleFor(req => req.NonCapitalItem).Must(HasAllRequiredValues).WithMessage("Name/Date Purchased cannot be null");
             RuleFor(req => req.NonCapitalItemId).MustAsync(ShouldHaveValidNonCapitalItemId).WithMessage("Invalid non-capital item id passed for update");
@@ -32,18 +32,18 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             return true;
         }
 
-        public async Task<bool> HasValidNameDateCombo(NonCapitalItemRequestDto item, CancellationToken cancellationToken)
+        public async Task<bool> HasValidNameDateCombo(UpdateNonCapitalItemCommand request, CancellationToken cancellationToken)
         {
             // We incorporate this check here due to the nature of async fluent assertions
             DateTime temp = new DateTime();
-            if (!DateTime.TryParse(item.DatePurchased, out temp))
+            if (!DateTime.TryParse(request.NonCapitalItem.DatePurchased, out temp))
             {
                 return false;
             }
             // Since this is a create, NO other object in the database can have the same name/date (update is a bit different)
-            var expenseItems = await _context.GetAllExpenseItems();
+            var nonCapitalItems = await _context.GetAllNonCapitalItems();
             var shortRequestDatetime = temp.ToShortDateString();
-            return expenseItems.SingleOrDefault(ei => ei.Name.Equals(item.Name) && ei.DatePurchased.ToShortDateString().Equals(shortRequestDatetime)) == null;
+            return nonCapitalItems.SingleOrDefault(ei => ei.Name.Equals(request.NonCapitalItem.Name) && ei.DatePurchased.ToShortDateString().Equals(shortRequestDatetime) && request.NonCapitalItemId != ei.Id) == null;
         }
 
         public bool HasAllRequiredValues(NonCapitalItemRequestDto item)
@@ -68,7 +68,7 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
         public async Task<bool> ShouldHaveValidNonCapitalItemId(int id, CancellationToken cancellationToken)
         {
             var nonCapitalItems = await _context.GetAllNonCapitalItems();
-            return (nonCapitalItems.Count(nci => nci.Id == id) == 0);
+            return (nonCapitalItems.Count(nci => nci.Id == id) != 0);
         }
     }
 }

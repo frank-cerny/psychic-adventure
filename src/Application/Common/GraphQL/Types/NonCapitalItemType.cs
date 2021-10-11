@@ -18,7 +18,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
             Field(e => e.UnitsRemaining, nullable: false);
             Field(e => e.Description);
             Field(e => e.DatePurchased);
-            Field(e => e.ProjectId);
+            Field(e => e.ProjectId, nullable: true);
             FieldAsync<ListGraphType<ExpenseItemType>, IList<ExpenseItem>>(
                 name: "expenseItems",
                 resolve: async context =>
