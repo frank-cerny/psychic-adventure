@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using bike_selling_app.Application.Projects.Commands;
 using bike_selling_app.Application.Bikes.Commands;
+using bike_selling_app.Application.NonCapitalItems.Commands;
 using bike_selling_app.Application.Common.Exceptions;
 using System.Linq;
 using System.Globalization;
@@ -160,6 +161,18 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 }
             };
             var newBike2 = await SendAsync<Bike>(bikeCommand);
+            // Create a non capital item
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    Units = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
             var projectCommand = new CreateProjectCommand
             {
                 project = new ProjectRequestDto
@@ -168,7 +181,8 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                     Description = "A simple project!",
                     DateStarted = "2020-09-15",
                     DateEnded = "2020-10-12",
-                    BikeIds = new List<int>() { newBike1.Id, newBike2.Id }
+                    BikeIds = new List<int>() { newBike1.Id, newBike2.Id },
+                    NonCapitalItemIds = new List<int>() { nonCapitalItem.Id }
                 }
             };
             var result = await SendAsync(projectCommand);
@@ -181,6 +195,8 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike1.Id);
             newProject.Bikes.Select(b => b.Id).ToList().Should().Contain(newBike2.Id);
             newProject.Title.Should().Be("testing3");
+            newProject.NonCapitalItems.Should().HaveCount(1);
+            newProject.NonCapitalItems[0].Name.Should().Be("MyItem");
         }
 
         [Test]
@@ -203,6 +219,38 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             FluentActions.Invoking(() => SendAsync(projectCommand)).Should().NotThrow<ValidationException>();
             projectCommand.project.Title = null;
             FluentActions.Invoking(() => SendAsync(projectCommand)).Should().Throw<ValidationException>();
+        }
+
+        [Test]
+        public async Task ShouldFilterDuplicateChildIdsOnCreate()
+        {
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    Units = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Title = "testing3",
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12",
+                    NonCapitalItemIds = new List<int>() { nonCapitalItem.Id, nonCapitalItem.Id, nonCapitalItem.Id }
+                }
+            };
+            var result = await SendAsync(projectCommand);
+            // Validate only a single noncapital exists within the project
+            var projects = await CallContextMethod<IList<Project>>("GetAllProjects");
+            var newProject = projects.SingleOrDefault(p => p.Id == result.Id);
+            newProject.NonCapitalItems.Should().HaveCount(1);
         }
 
         // Delete Tests
@@ -233,6 +281,17 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
         [Test]
         public async Task ShouldDeleteProject()
         {
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    Units = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
             var projectCommand = new CreateProjectCommand
             {
                 project = new ProjectRequestDto
@@ -240,7 +299,8 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                     Title = "testing2",
                     Description = "A simple project!",
                     DateStarted = "2020-09-15",
-                    DateEnded = "2020-10-12"
+                    DateEnded = "2020-10-12",
+                    NonCapitalItemIds = new List<int>() { nonCapitalItem.Id }
                 }
             };
             var result = await SendAsync(projectCommand);
@@ -255,6 +315,10 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             deletedProject.Title.Should().Be(result.Title);
             newProject = await CallContextMethod<Project>("GetProjectById", result.Id);
             newProject.Should().BeNull();
+            // Ensure all child items are NOT deleted (they must be manually deleted)
+            var allNonCapitalItems = await CallContextMethod<IList<NonCapitalItem>>("GetAllNonCapitalItems");
+            var existingNonCapitalItem = allNonCapitalItems.SingleOrDefault(nci => nci.Id == nonCapitalItem.Id);
+            existingNonCapitalItem.Should().NotBeNull();
         }
 
         // Update Tests
@@ -418,6 +482,52 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             var updateResult = await SendAsync(updateCommand);
             updateResult.Bikes.Should().HaveCount(1);
         }
+        
+        [Test]
+        public async Task ShouldFilterDuplicateChildIdsOnUpdate()
+        {
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    Units = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
+            // Do not add any bike or items at first
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Title = "testing3",
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12",
+                }
+            };
+            var result = await SendAsync(projectCommand);
+            // Now update the project with the items
+            var updateCommand = new UpdateProjectCommand
+            {
+                projectId = result.Id,
+                project = new ProjectRequestDto
+                {
+                    Title = "newTitle",
+                    Description = "A simple project!!",
+                    DateStarted = "2020-09-16",
+                    DateEnded = "2020-10-13",
+                    NonCapitalItemIds = new List<int>() { nonCapitalItem.Id, nonCapitalItem.Id, nonCapitalItem.Id }   
+                }
+            };
+            result = await SendAsync(updateCommand);
+            // Validate only a single noncapital exists within the project
+            var projects = await CallContextMethod<IList<Project>>("GetAllProjects");
+            var newProject = projects.SingleOrDefault(p => p.Id == result.Id);
+            newProject.NonCapitalItems.Should().HaveCount(1);
+        }
 
         [Test]
         public async Task ShouldUpdateProject()
@@ -435,7 +545,19 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 }
             };
             var newBike1 = await SendAsync<Bike>(bikeCommand);
-            // Do not add any bikes at first
+            // Create a non capital item
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    Units = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
+            // Do not add any bike or items at first
             var projectCommand = new CreateProjectCommand
             {
                 project = new ProjectRequestDto
@@ -460,7 +582,8 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                     Description = "A simple project!!",
                     DateStarted = "2020-09-16",
                     DateEnded = "2020-10-13",
-                    BikeIds = new List<int>() { newBike1.Id }      
+                    BikeIds = new List<int>() { newBike1.Id },
+                    NonCapitalItemIds = new List<int>() { nonCapitalItem.Id }   
                 }
             };
             result = await SendAsync(updateCommand);
@@ -473,6 +596,9 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             var updatedProject = await CallContextMethod<Project>("GetProjectById", result.Id);
             updatedProject.Title.Should().Be("newTitle");
             updatedProject.Description.Should().Be("A simple project!!");
+            updatedProject.Bikes.Should().HaveCount(1);
+            updatedProject.NonCapitalItems.Should().HaveCount(1);
+            updatedProject.NonCapitalItems[0].Name.Should().Be("MyItem");
         }
     }
 }
