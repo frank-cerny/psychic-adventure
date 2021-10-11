@@ -12,7 +12,8 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
             Field<StringGraphType>("datePurchased");
             Field<IntGraphType>("projectId");
             Field<NonNullGraphType<FloatGraphType>>("unitCost");
-            Field<NonNullGraphType<IntGraphType>>("units");
+            Field<NonNullGraphType<IntGraphType>>("unitsPurchased");
+            Field<NonNullGraphType<IntGraphType>>("unitsRemaining");
             Field<ListGraphType<IntGraphType>>("expenseItemIds");
         }
     }

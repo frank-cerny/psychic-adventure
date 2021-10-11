@@ -25,7 +25,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -36,7 +36,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             var newItem = allNonCapitalItems.SingleOrDefault(item => item.Name.Equals("MyItem"));
             newItem.Should().NotBeNull();
             newItem.UnitCost.Should().Be(5.67);
-            newItem.Units.Should().Be(1);
+            newItem.UnitsPurchased.Should().Be(1);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                     ExpenseItemIds = new List<int>() { expenseItem.Id }
                 }
@@ -72,7 +72,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             var newItem = allNonCapitalItems.SingleOrDefault(item => item.Name.Equals("MyItem"));
             newItem.Should().NotBeNull();
             newItem.UnitCost.Should().Be(5.67);
-            newItem.Units.Should().Be(1);
+            newItem.UnitsPurchased.Should().Be(1);
             newItem.ExpenseItems.Should().HaveCount(1);
             newItem.ExpenseItems[0].Name.Should().Be("Postage");
         }
@@ -98,7 +98,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                     ExpenseItemIds = new List<int>() { expenseItem.Id, expenseItem.Id }
                 }
@@ -127,7 +127,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             createCommand.NonCapitalItem.UnitCost = 4.56;
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            createCommand.NonCapitalItem.Units = 3;
+            createCommand.NonCapitalItem.UnitsPurchased = 3;
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             createCommand.NonCapitalItem.DatePurchased = "08-09-2021";
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
@@ -142,7 +142,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "078-11-2021",
                 }
             };
@@ -162,7 +162,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -194,7 +194,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                     ExpenseItemIds = new List<int>() { -1 }
                 }
@@ -230,7 +230,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -243,7 +243,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "UpdatedItem!",
                     UnitCost = 4.45,
-                    Units = 5,
+                    UnitsPurchased = 5,
                     DatePurchased = "07-11-1987",
                     ExpenseItemIds = new List<int>() { expenseItem.Id }
                 },
@@ -256,7 +256,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             var newItem = allNonCapitalItems.SingleOrDefault(item => item.Name.Equals("UpdatedItem!"));
             newItem.Should().NotBeNull();
             newItem.UnitCost.Should().Be(4.45);
-            newItem.Units.Should().Be(5);
+            newItem.UnitsPurchased.Should().Be(5);
             newItem.ExpenseItems.Should().HaveCount(1);
         }
 
@@ -270,7 +270,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -289,7 +289,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.UnitCost = 4.56;
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            updateCommand.NonCapitalItem.Units = 3;
+            updateCommand.NonCapitalItem.UnitsPurchased = 3;
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.DatePurchased = "08-09-2021";
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
@@ -316,7 +316,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -329,7 +329,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "UpdatedItem!",
                     UnitCost = 4.45,
-                    Units = 5,
+                    UnitsPurchased = 5,
                     DatePurchased = "07-11-1987",
                     ExpenseItemIds = new List<int>() { expenseItem.Id, expenseItem.Id, expenseItem.Id }
                 },
@@ -351,7 +351,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -363,7 +363,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "UpdatedItem!",
                     UnitCost = 4.45,
-                    Units = 5,
+                    UnitsPurchased = 5,
                     DatePurchased = "077-11-1987"
                 },
                 NonCapitalItemId = item.Id
@@ -384,7 +384,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -394,7 +394,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             {
                     Name = "MyItem2",
                     UnitCost = 0.25,
-                    Units = 25,
+                    UnitsPurchased = 25,
                     DatePurchased = "07-11-1921", 
             };
             item = await SendAsync(createCommand);
@@ -405,7 +405,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 4.45,
-                    Units = 5,
+                    UnitsPurchased = 5,
                     DatePurchased = "07-11-2021"
                 },
                 NonCapitalItemId = item.Id
@@ -439,7 +439,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -452,7 +452,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "UpdatedItem!",
                     UnitCost = 4.45,
-                    Units = 5,
+                    UnitsPurchased = 5,
                     DatePurchased = "07-11-1987",
                     ExpenseItemIds = new List<int>() { -1 }
                 },
@@ -472,7 +472,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -485,7 +485,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "UpdatedItem!",
                     UnitCost = 4.45,
-                    Units = 5,
+                    UnitsPurchased = 5,
                     DatePurchased = "07-11-1987",
                 },
                 NonCapitalItemId = -1
@@ -505,7 +505,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };
@@ -540,7 +540,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 {
                     Name = "MyItem",
                     UnitCost = 5.67,
-                    Units = 1,
+                    UnitsPurchased = 1,
                     DatePurchased = "07-11-2021",
                 }
             };

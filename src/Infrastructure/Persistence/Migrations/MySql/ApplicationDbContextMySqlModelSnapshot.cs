@@ -178,7 +178,10 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.MySql
                     b.Property<double>("UnitCost")
                         .HasColumnType("double");
 
-                    b.Property<int>("Units")
+                    b.Property<int>("UnitsPurchased")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitsRemaining")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

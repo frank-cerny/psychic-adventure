@@ -12,7 +12,8 @@ namespace bike_selling_app.Domain.Entities
         public Project Project { get; set; }
         public int? ProjectId { get; set; }
         public double UnitCost { get; set; }
-        public int Units { get; set; }
+        public int UnitsPurchased { get; set; }
+        public int UnitsRemaining { get; set; }
         public IList<ExpenseItem> ExpenseItems { get; set; }
     }
 }

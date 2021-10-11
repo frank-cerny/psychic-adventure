@@ -168,7 +168,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 {
                     Name = "MyItem",
                     UnitCost = 4.45,
-                    Units = 3,
+                    UnitsPurchased = 3,
                     DatePurchased = "06-23-2015"
                 }
             };
@@ -230,7 +230,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 {
                     Name = "MyItem",
                     UnitCost = 4.45,
-                    Units = 3,
+                    UnitsPurchased = 3,
                     DatePurchased = "06-23-2015"
                 }
             };
@@ -287,7 +287,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 {
                     Name = "MyItem",
                     UnitCost = 4.45,
-                    Units = 3,
+                    UnitsPurchased = 3,
                     DatePurchased = "06-23-2015"
                 }
             };
@@ -355,6 +355,8 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             updateProjectCommand.project.DateEnded = "2021-09-15";
             FluentActions.Invoking(() => SendAsync(updateProjectCommand)).Should().NotThrow<ValidationException>();
         }
+
+        // TODO Create/Update should have valid NonCapitalItem Ids :)
 
         [Test]
         public async Task ShouldRequireUniqueTitleOnUpdate()
@@ -492,7 +494,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 {
                     Name = "MyItem",
                     UnitCost = 4.45,
-                    Units = 3,
+                    UnitsPurchased = 3,
                     DatePurchased = "06-23-2015"
                 }
             };
@@ -552,7 +554,7 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
                 {
                     Name = "MyItem",
                     UnitCost = 4.45,
-                    Units = 3,
+                    UnitsPurchased = 3,
                     DatePurchased = "06-23-2015"
                 }
             };
