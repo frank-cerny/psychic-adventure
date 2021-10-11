@@ -121,13 +121,9 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
 
                 }
             };
-            // Name, UnitCost, Units, and DatePurchased are all mandatory fields
+            // Name, UnitCost, Units, and DatePurchased are all mandatory fields (Units/UnitCost default to 0 and cannot be null by defined)
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             createCommand.NonCapitalItem.Name = "TestItem6";
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            createCommand.NonCapitalItem.UnitCost = 4.56;
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            createCommand.NonCapitalItem.UnitsPurchased = 3;
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             createCommand.NonCapitalItem.DatePurchased = "08-09-2021";
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();
@@ -275,7 +271,7 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
                 }
             };
             var item = await SendAsync(createCommand);
-            // Now update the item (remember that Name, UnitCost, Units, and DatePurchased are required fields)
+            // Name, UnitCost, Units, and DatePurchased are all mandatory fields (Units/UnitCost default to 0 and cannot be null by defined)
             var updateCommand = new UpdateNonCapitalItemCommand
             {
                 NonCapitalItem = new NonCapitalItemRequestDto
@@ -286,10 +282,6 @@ namespace bike_selling_app.Application.IntegrationTests.ExpenseItems
             };
             FluentActions.Invoking(() => SendAsync(updateCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.Name = "TestItem6";
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            updateCommand.NonCapitalItem.UnitCost = 4.56;
-            FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
-            updateCommand.NonCapitalItem.UnitsPurchased = 3;
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().Throw<ValidationException>();
             updateCommand.NonCapitalItem.DatePurchased = "08-09-2021";
             FluentActions.Invoking(() => SendAsync(createCommand)).Should().NotThrow<ValidationException>();

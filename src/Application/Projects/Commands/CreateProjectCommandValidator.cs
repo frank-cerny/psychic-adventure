@@ -18,9 +18,8 @@ namespace bike_selling_app.Application.Projects.Commands
             RuleFor(req => req.project).Must(HasValidDateStrings).WithMessage("Invalid date string. Date string must be a valid date or null.");
             RuleFor(req => req.project.BikeIds).MustAsync(HasValidBikeIds).WithMessage("All bike ids must exist");
             RuleFor(req => req.project.Title).MustAsync(HasUniqueTitle).WithMessage("Project title must be unique!");
+            RuleFor(req => req.project.NonCapitalItemIds).MustAsync(HasValidNonCapitalIds).WithMessage("All non-capital item ids must be valid");
         }
-
-        // TODO - Add validation for all item based things
 
         public bool HasValidDateStrings(ProjectRequestDto dto)
         {
@@ -70,6 +69,19 @@ namespace bike_selling_app.Application.Projects.Commands
             foreach (int id in ids)
             {
                 if (bikes.Count(b => b.Id == id) == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> HasValidNonCapitalIds(IList<int> ids, CancellationToken cancellationToken)
+        {
+            var allNonCapitalItems = await _context.GetAllNonCapitalItems();
+            foreach (int id in ids)
+            {
+                if (allNonCapitalItems.Count(nic => nic.Id == id) == 0)
                 {
                     return false;
                 }

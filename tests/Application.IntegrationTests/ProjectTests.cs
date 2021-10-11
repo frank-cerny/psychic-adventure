@@ -200,6 +200,36 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
         }
 
         [Test]
+        public async Task ShouldRequireValidNonCapitalItemIdsOnCreate()
+        {
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    UnitsPurchased = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Title = "testing3",
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12",
+                    NonCapitalItemIds = new List<int>() { -1 }
+                }
+            };
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().Throw<ValidationException>();
+            projectCommand.project.NonCapitalItemIds = new List<int>() { nonCapitalItem.Id };
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().NotThrow<ValidationException>();
+        }
+
+        [Test]
         public async Task ShouldRequireUniqueTitleOnCreate()
         {
             // Create project
@@ -356,7 +386,36 @@ namespace bike_selling_app.Application.IntegrationTests.Bikes
             FluentActions.Invoking(() => SendAsync(updateProjectCommand)).Should().NotThrow<ValidationException>();
         }
 
-        // TODO Create/Update should have valid NonCapitalItem Ids :)
+        [Test]
+        public async Task ShouldRequireValidNonCapitalItemIdsOnUpdate()
+        {
+            var nonCapitalItemCommand = new CreateNonCapitalItemCommand
+            {
+                NonCapitalItem = new NonCapitalItemRequestDto
+                {
+                    Name = "MyItem",
+                    UnitCost = 4.45,
+                    UnitsPurchased = 3,
+                    DatePurchased = "06-23-2015"
+                }
+            };
+            var nonCapitalItem = await SendAsync(nonCapitalItemCommand);
+            // Do not add any bike or items at first
+            var projectCommand = new CreateProjectCommand
+            {
+                project = new ProjectRequestDto
+                {
+                    Title = "testing3",
+                    Description = "A simple project!",
+                    DateStarted = "2020-09-15",
+                    DateEnded = "2020-10-12",
+                    NonCapitalItemIds = new List<int>() { -1 }
+                }
+            };
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().Throw<ValidationException>();
+            projectCommand.project.NonCapitalItemIds = new List<int>() { nonCapitalItem.Id };
+            FluentActions.Invoking(() => SendAsync(projectCommand)).Should().NotThrow<ValidationException>();
+        }
 
         [Test]
         public async Task ShouldRequireUniqueTitleOnUpdate()

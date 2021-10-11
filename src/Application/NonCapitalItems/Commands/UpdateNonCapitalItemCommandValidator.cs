@@ -9,15 +9,17 @@ using System.Collections.Generic;
 
 namespace bike_selling_app.Application.NonCapitalItems.Commands
 {
-    public class UpdateNonCapitalItemCommandValidator : AbstractValidator<CreateNonCapitalItemCommand>
+    public class UpdateNonCapitalItemCommandValidator : AbstractValidator<UpdateNonCapitalItemCommand>
     {
         private readonly IApplicationDbContext _context;
         public UpdateNonCapitalItemCommandValidator(IServiceScopeFactory scopeFactory)
         {
             _context = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
             RuleFor(req => req.NonCapitalItem.DatePurchased).Must(HasValidDateString).WithMessage("Invalid date string. Date string must be a valid date.");
-            // RuleFor(req => req.ExpenseItem.ParentItemId).MustAsync(HasValidParentItemId).WithMessage("Expense item must have a valid parent id");
-            // RuleFor(req => req.ExpenseItem).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all expense items");
+            RuleFor(req => req.NonCapitalItem).MustAsync(HasValidNameDateCombo).WithMessage("Name/Date combination must be unique across all expense items");
+            RuleFor(req => req.NonCapitalItem.ExpenseItemIds).MustAsync(ShouldHaveValidChildrenIds).WithMessage("All expense item ids must exist");
+            RuleFor(req => req.NonCapitalItem).Must(HasAllRequiredValues).WithMessage("Name/Date Purchased cannot be null");
+            RuleFor(req => req.NonCapitalItemId).MustAsync(ShouldHaveValidNonCapitalItemId).WithMessage("Invalid non-capital item id passed for update");
         }
 
         public bool HasValidDateString(string datetime)
@@ -30,11 +32,8 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             return true;
         }
 
-
-        // TODO - Plus check all expense item ids
         public async Task<bool> HasValidNameDateCombo(NonCapitalItemRequestDto item, CancellationToken cancellationToken)
         {
-            // TODO - Can we make this better?
             // We incorporate this check here due to the nature of async fluent assertions
             DateTime temp = new DateTime();
             if (!DateTime.TryParse(item.DatePurchased, out temp))
@@ -47,6 +46,29 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             return expenseItems.SingleOrDefault(ei => ei.Name.Equals(item.Name) && ei.DatePurchased.ToShortDateString().Equals(shortRequestDatetime)) == null;
         }
 
-        // TODO - Should we ensure all non-null fields are null?
+        public bool HasAllRequiredValues(NonCapitalItemRequestDto item)
+        {
+            return (item.Name != null && item.DatePurchased != null);
+        }
+
+        public async Task<bool> ShouldHaveValidChildrenIds(IList<int> ids, CancellationToken cancellationToken)
+        {
+            var expenseItems = await _context.GetAllExpenseItems();
+            var expenseItemIds = expenseItems.Select(e => e.Id).ToList();
+            foreach (int id in ids)
+            {
+                if (!expenseItemIds.Contains(id))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> ShouldHaveValidNonCapitalItemId(int id, CancellationToken cancellationToken)
+        {
+            var nonCapitalItems = await _context.GetAllNonCapitalItems();
+            return (nonCapitalItems.Count(nci => nci.Id == id) == 0);
+        }
     }
 }

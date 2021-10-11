@@ -19,9 +19,8 @@ namespace bike_selling_app.Application.Projects.Commands
             RuleFor(req => req.project.BikeIds).MustAsync(HasValidBikeIds).WithMessage("All bike ids must exist");
             // Reference: https://stackoverflow.com/questions/20529085/fluentvalidation-rule-for-multiple-properties
             RuleFor(req => req).MustAsync(HasUniqueTitle).WithMessage("Project title must be unique!");
+            RuleFor(req => req.project.NonCapitalItemIds).MustAsync(HasValidNonCapitalIds).WithMessage("All non-capital item ids must be valid");
         }
-
-        // TODO - Add validation for all item based things
 
         public bool HasValidDateStrings(ProjectRequestDto dto)
         {
@@ -64,6 +63,19 @@ namespace bike_selling_app.Application.Projects.Commands
             }
             return true;
         } 
+    
+        public async Task<bool> HasValidNonCapitalIds(IList<int> ids, CancellationToken cancellationToken)
+        {
+            var allNonCapitalItems = await _context.GetAllNonCapitalItems();
+            foreach (int id in ids)
+            {
+                if (allNonCapitalItems.Count(nic => nic.Id == id) == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public async Task<bool> HasValidBikeIds(IList<int> ids, CancellationToken cancellationToken)
         {
