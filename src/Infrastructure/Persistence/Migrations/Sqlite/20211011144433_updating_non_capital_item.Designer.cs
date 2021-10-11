@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bike_selling_app.Infrastructure.Persistence;
 
 namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(ApplicationDbContextSqlite))]
-    partial class ApplicationDbContextSqliteModelSnapshot : ModelSnapshot
+    [Migration("20211011144433_updating_non_capital_item")]
+    partial class updating_non_capital_item
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

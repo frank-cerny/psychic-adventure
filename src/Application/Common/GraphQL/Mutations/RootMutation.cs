@@ -4,6 +4,7 @@ using bike_selling_app.Application.Common.GraphQL.Types;
 using bike_selling_app.Application.Bikes.Commands;
 using bike_selling_app.Application.Projects.Commands;
 using bike_selling_app.Application.ExpenseItems.Commands;
+using bike_selling_app.Application.NonCapitalItems.Commands;
 using bike_selling_app.Domain.Entities;
 using MediatR;
 
@@ -159,6 +160,55 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                     var deleteCommand = new DeleteExpenseItemCommand
                     {
                         ExpenseItemId = expenseItemId
+                    };
+                    return await mediator.Send(deleteCommand);
+                });
+
+            // NonCapital Items
+            FieldAsync<NonCapitalItemType>(
+                "addNonCapitalItem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<NonCapitalInputItemType>> { Name = "nonCapitalItem"}
+                ),
+                resolve: async context =>
+                {
+                    var nonCapitalItem = context.GetArgument<NonCapitalItemRequestDto>("nonCapitalItem");
+                    var createCommand = new CreateNonCapitalItemCommand
+                    {
+                        NonCapitalItem = nonCapitalItem
+                    };
+                    return await mediator.Send(createCommand);
+                });
+
+            FieldAsync<NonCapitalItemType>(
+                "updateNonCapitalItem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<NonCapitalInputItemType>> { Name = "nonCapitalItem"},
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
+                ),
+                resolve: async context =>
+                {
+                    var nonCapitalItem = context.GetArgument<NonCapitalItemRequestDto>("nonCapitalItem");
+                    var nonCapitalItemId = context.GetArgument<int>("id");
+                    var updateCommand = new UpdateNonCapitalItemCommand
+                    {
+                        NonCapitalItem = nonCapitalItem,
+                        NonCapitalItemId = nonCapitalItemId
+                    };
+                    return await mediator.Send(updateCommand);
+                });
+
+            FieldAsync<NonCapitalItemType>(
+                "deleteNonCapitalItem",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
+                ),
+                resolve: async context =>
+                {
+                    var nonCapitalItemId = context.GetArgument<int>("id");
+                    var deleteCommand = new DeleteNonCapitalItemCommand
+                    {
+                        NonCapitalItemId = nonCapitalItemId
                     };
                     return await mediator.Send(deleteCommand);
                 });

@@ -15,4 +15,4 @@ export ASPNETCORE_ENVIRONMENT=Development
 dotnet ef migrations add --project "$WORKING_DIR/src/Infrastructure/" --context ApplicationDbContextSqlite --startup-project "$WORKING_DIR/src/WebUI" --output-dir "Persistence/Migrations/Sqlite" "$1" --verbose 
 
 export ASPNETCORE_ENVIRONMENT=Production
-dotnet ef migrations add --project "$WORKING_DIR/src/Infrastructure/" --context ApplicationDbContextMySql --startup-project "$WORKING_DIR/src/WebUI" --output-dir "Persistence/Migrations/MySql" "$1" --verbose
+dotnet ef migrations add --project "$WORKING_DIR/src/Infrastructure/" --context ApplicationDbContextMySql --startup-project "$WORKING_DIR/src/WebUI" --output-dir "Persistence/Migrations/MySql" "$1"

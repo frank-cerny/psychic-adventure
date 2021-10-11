@@ -164,7 +164,6 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
 

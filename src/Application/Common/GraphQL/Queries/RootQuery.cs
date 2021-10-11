@@ -39,6 +39,14 @@ namespace bike_selling_app.Application.Common.GraphQL.Queries
                     return await dbContext.GetAllExpenseItems();
                 }
             );
+            FieldAsync<ListGraphType<NonCapitalItemType>, IList<NonCapitalItem>> (
+                name: "nonCapitalItems",
+                resolve: async context => 
+                {
+                    var dbContext = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
+                    return await dbContext.GetAllNonCapitalItems();
+                }
+            );
         }
     }
 }
