@@ -81,6 +81,30 @@ namespace bike_selling_app.WebUI.IntegrationTests
             };
             var bikeResponse = await graphClient.SendQueryAsync<BikeCollectionType>(getAllBikesRequest);
             bikeResponse.Data.Bikes.Should().HaveCount(2);
+            // Add a non-capital item
+            var createNonCapitalItem = new GraphQLHttpRequest
+            {
+                Query = @"mutation createExpenseItem($nonCapitalItem: NonCapitalItemInputType!) {
+                            addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
+                                name
+                                unitCost
+                                units
+                                description
+                            }
+                        }",
+                OperationName = "Add NonCapitalItem",
+                Variables = new
+                {
+                    expenseItem = new
+                    {
+                        name = "Brake Cable",
+                        unitCost = 5.67,
+                        units = 5,
+                        datePurchased = "07-15-2021",
+                    }
+                }
+            };
+            var nonCapitalItemResponse = await graphClient.SendMutationAsync<AddNonCapitalItemType>(createNonCapitalItem);    
             // Now create the project (with the 2 bikes from above)
             var createProjectMutation = new GraphQLHttpRequest
             {
@@ -89,6 +113,9 @@ namespace bike_selling_app.WebUI.IntegrationTests
                                 title
                                 bikes {
                                     id
+                                }
+                                nonCapitalItems {
+                                    name
                                 }
                             }
                         }",
@@ -99,13 +126,15 @@ namespace bike_selling_app.WebUI.IntegrationTests
                     {
                         title = "A new project!",
                         description = "I can create a project!",
-                        bikeIds = bikeResponse.Data.Bikes.Select(b => b.Id).ToList()
+                        bikeIds = bikeResponse.Data.Bikes.Select(b => b.Id).ToList(),
+                        nonCapitalItemIds = new List<int>() { nonCapitalItemResponse.Data.addNonCapitalItem.Id }
                     }
                 }
             };
             var projectMutationResponse = await graphClient.SendMutationAsync<AddProjectType>(createProjectMutation);
             projectMutationResponse.Data.addProject.Title.Equals("A new project!");
             projectMutationResponse.Data.addProject.Bikes.Select(b => b.Id).ToList().Should().BeEquivalentTo(bikeResponse.Data.Bikes.Select(b => b.Id).ToList());
+            projectMutationResponse.Data.addProject.NonCapitalItems.Should().HaveCount(1);
             // Now verify that the project has been added by querying for it
             var newProjectQuery = new GraphQLHttpRequest
             {
