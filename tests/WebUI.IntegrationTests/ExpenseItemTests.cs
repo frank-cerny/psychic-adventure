@@ -43,7 +43,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
                 Query = @"mutation createExpenseItem($expenseItem: ExpenseItemInputType!) {
                             addExpenseItem(expenseItem : $expenseItem) {
                                 name
-                                purchasedPrice
+                                unitCost
+                                units
                                 description
                             }
                         }",
@@ -55,7 +56,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
                         name = "Postage",
                         unitCost = 5.67,
                         units = 5,
-                        parentItemId = 10
+                        parentItemId = 10,
+                        datePurchased = "07-15-2021"
                     }
                 }
             };
@@ -87,8 +89,9 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createExpenseItem($expenseItem: ExpenseItemInputType!) {
                             addExpenseItem(expenseItem : $expenseItem) {
+                                id
                                 name
-                                purchasedPrice
+                                unitCost
                                 description
                             }
                         }",
@@ -100,7 +103,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
                         name = "Postage",
                         unitCost = 5.67,
                         units = 5,
-                        parentItemId = 10
+                        parentItemId = 10,
+                        datePurchased = "07-15-2021"
                     }
                 }
             };
@@ -110,7 +114,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation deleteExpenseItem($id: Int!) {
                             removeExpenseItem(id: $id) {
-                                Name
+                                name
                             }
                         }",
                 OperationName = "Remove expense item",
@@ -146,6 +150,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createExpenseItem($expenseItem: ExpenseItemInputType!) {
                             addExpenseItem(expenseItem : $expenseItem) {
+                                id
                                 name
                                 unitCost
                                 description
@@ -159,7 +164,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
                         name = "Postage",
                         unitCost = 5.67,
                         units = 5,
-                        parentItemId = 10
+                        parentItemId = 10,
+                        datePurchased = "07-15-2021"
                     }
                 }
             };
@@ -167,10 +173,10 @@ namespace bike_selling_app.WebUI.IntegrationTests
             createMutationResponse.Data.addExpenseItem.Name.Should().Be("Postage");
             var updateMutation = new GraphQLHttpRequest
             {
-                Query = @"mutation createExpenseItem($id: Int!, $expenseItem: ExpenseItemInputType!) {
-                            addExpenseItem($id : id, expenseItem : $expenseItem) {
+                Query = @"mutation updateExpenseItem($id: Int!, $expenseItem: ExpenseItemInputType!) {
+                            updateExpenseItem(id : $id, expenseItem : $expenseItem) {
                                 name
-                                purchasedPrice
+                                unitCost
                                 description
                             }
                         }",
@@ -183,7 +189,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
                         name = "Tape",
                         unitCost = 1.25,
                         units = 2,
-                        description = "A new, updated item!"
+                        description = "A new, updated item!",
+                        datePurchased = "07-15-2020"
                     }
                 }
             };

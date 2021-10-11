@@ -12,7 +12,10 @@ namespace bike_selling_app.Infrastructure.Persistence.Configurations
             builder.Property(ri => ri.Description).HasMaxLength(250).IsRequired();
             builder.Property(ri => ri.SalePrice).IsRequired();
             builder.Property(ri => ri.PlatformSoldOn).HasMaxLength(100).IsRequired();
-            builder.Property(ri => ri.ItemType).HasMaxLength(100).IsRequired();
+            builder.Property(ri => ri.RevenueItemType).HasMaxLength(100).IsRequired();
+            builder.HasMany(ri=> ri.ExpenseItems)
+                .WithOne()
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

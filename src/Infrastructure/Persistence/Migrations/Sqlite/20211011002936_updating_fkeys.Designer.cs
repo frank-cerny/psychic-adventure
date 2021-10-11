@@ -9,8 +9,8 @@ using bike_selling_app.Infrastructure.Persistence;
 namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(ApplicationDbContextSqlite))]
-    [Migration("20211010164217_initial_migration")]
-    partial class initial_migration
+    [Migration("20211011002936_updating_fkeys")]
+    partial class updating_fkeys
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -78,7 +78,84 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                     b.ToTable("Bikes");
                 });
 
-            modelBuilder.Entity("bike_selling_app.Domain.Entities.Item", b =>
+            modelBuilder.Entity("bike_selling_app.Domain.Entities.CapitalItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Cost")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("DatePurchased")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UsageCount")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CapitalItems");
+                });
+
+            modelBuilder.Entity("bike_selling_app.Domain.Entities.ExpenseItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CapitalItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DatePurchased")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("NonCapitalItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("RevenueItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("UnitCost")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Units")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CapitalItemId");
+
+                    b.HasIndex("NonCapitalItemId");
+
+                    b.HasIndex("RevenueItemId");
+
+                    b.HasIndex("Name", "DatePurchased")
+                        .IsUnique();
+
+                    b.ToTable("ExpenseItems");
+                });
+
+            modelBuilder.Entity("bike_selling_app.Domain.Entities.NonCapitalItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,21 +169,25 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ItemType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("UnitCost")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Units")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Items");
+                    b.HasIndex("ProjectId");
 
-                    b.HasDiscriminator<string>("ItemType").HasValue("Item");
+                    b.ToTable("NonCapitalItems");
                 });
 
             modelBuilder.Entity("bike_selling_app.Domain.Entities.Project", b =>
@@ -139,79 +220,30 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("bike_selling_app.Domain.Entities.CapitalItem", b =>
-                {
-                    b.HasBaseType("bike_selling_app.Domain.Entities.Item");
-
-                    b.Property<double>("Cost")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("UsageCount")
-                        .HasColumnType("INTEGER");
-
-                    b.HasDiscriminator().HasValue("capital");
-                });
-
-            modelBuilder.Entity("bike_selling_app.Domain.Entities.ExpenseItem", b =>
-                {
-                    b.HasBaseType("bike_selling_app.Domain.Entities.Item");
-
-                    b.Property<int?>("CapitalItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("NonCapitalItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("RevenueItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("UnitCost")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("Units")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("CapitalItemId");
-
-                    b.HasIndex("NonCapitalItemId");
-
-                    b.HasIndex("RevenueItemId");
-
-                    b.HasIndex("Name", "DatePurchased")
-                        .IsUnique();
-
-                    b.HasDiscriminator().HasValue("expense");
-                });
-
-            modelBuilder.Entity("bike_selling_app.Domain.Entities.NonCapitalItem", b =>
-                {
-                    b.HasBaseType("bike_selling_app.Domain.Entities.Item");
-
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("UnitCost")
-                        .HasColumnType("REAL")
-                        .HasColumnName("NonCapitalItem_UnitCost");
-
-                    b.Property<int>("Units")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("NonCapitalItem_Units");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasDiscriminator().HasValue("non-capital");
-                });
-
             modelBuilder.Entity("bike_selling_app.Domain.Entities.RevenueItem", b =>
                 {
-                    b.HasBaseType("bike_selling_app.Domain.Entities.Item");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DatePurchased")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateSold")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsPending")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PlatformSoldOn")
                         .IsRequired()
@@ -219,10 +251,11 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ProjectId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("RevenueItem_ProjectId");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("RevenueItemType")
+                        .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<double>("SalePrice")
@@ -231,9 +264,11 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                     b.Property<double>("Weight")
                         .HasColumnType("REAL");
 
+                    b.HasKey("Id");
+
                     b.HasIndex("ProjectId");
 
-                    b.HasDiscriminator().HasValue("revenue");
+                    b.ToTable("RevenueItems");
                 });
 
             modelBuilder.Entity("CapitalItemProject", b =>
@@ -264,15 +299,18 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                 {
                     b.HasOne("bike_selling_app.Domain.Entities.CapitalItem", null)
                         .WithMany("ExpenseItems")
-                        .HasForeignKey("CapitalItemId");
+                        .HasForeignKey("CapitalItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("bike_selling_app.Domain.Entities.NonCapitalItem", null)
                         .WithMany("ExpenseItems")
-                        .HasForeignKey("NonCapitalItemId");
+                        .HasForeignKey("NonCapitalItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("bike_selling_app.Domain.Entities.RevenueItem", null)
                         .WithMany("ExpenseItems")
-                        .HasForeignKey("RevenueItemId");
+                        .HasForeignKey("RevenueItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("bike_selling_app.Domain.Entities.NonCapitalItem", b =>
@@ -291,15 +329,6 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
                         .HasForeignKey("ProjectId");
                 });
 
-            modelBuilder.Entity("bike_selling_app.Domain.Entities.Project", b =>
-                {
-                    b.Navigation("Bikes");
-
-                    b.Navigation("NonCapitalItems");
-
-                    b.Navigation("RevenueItems");
-                });
-
             modelBuilder.Entity("bike_selling_app.Domain.Entities.CapitalItem", b =>
                 {
                     b.Navigation("ExpenseItems");
@@ -308,6 +337,15 @@ namespace bike_selling_app.Infrastructure.Persistence.Migrations.Sqlite
             modelBuilder.Entity("bike_selling_app.Domain.Entities.NonCapitalItem", b =>
                 {
                     b.Navigation("ExpenseItems");
+                });
+
+            modelBuilder.Entity("bike_selling_app.Domain.Entities.Project", b =>
+                {
+                    b.Navigation("Bikes");
+
+                    b.Navigation("NonCapitalItems");
+
+                    b.Navigation("RevenueItems");
                 });
 
             modelBuilder.Entity("bike_selling_app.Domain.Entities.RevenueItem", b =>
