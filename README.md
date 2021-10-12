@@ -11,9 +11,17 @@
 
 This is a useful tool for ensuring our dependencies are updated (and even supports autoupdating!)
 
-[Dotnet Outdated Github](https://github.com/dotnet-outdated/dotnet-outdated)
+[Dotnet Outdated GitHub](https://github.com/dotnet-outdated/dotnet-outdated)
 
 Run `dotnet-outdated`
+
+## Using CycloneDX
+
+This is a useful tool for generating software bill of materials
+
+[CycloneDX for Dotnet on GitHub](https://github.com/CycloneDX/cyclonedx-dotnet)
+
+Run `dotnet CycloneDX <path> -o <OUTPUT_DIRECTORY>` or use a helper script inside of `tools/`
 
 # Questions
 

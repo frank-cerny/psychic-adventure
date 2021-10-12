@@ -41,6 +41,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createExpenseItem($expenseItem: ExpenseItemInputType!) {
                             addExpenseItem(expenseItem : $expenseItem) {
+                                id
                                 name
                                 unitCost
                                 units
@@ -118,6 +119,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createExpenseItem($nonCapitalItem: NonCapitalItemInputType!) {
                             addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
+                                id
                                 name
                                 unitCost
                                 unitsPurchased
@@ -145,6 +147,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation deleteNonCapitalItem($id: Int!) {
                             removeNonCapitalItem(id: $id) {
+                                id
                                 name
                             }
                         }",
@@ -181,6 +184,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createExpenseItem($nonCapitalItem: NonCapitalItemInputType!) {
                             addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
+                                id
                                 name
                                 unitCost
                                 unitsPurchased
@@ -206,7 +210,8 @@ namespace bike_selling_app.WebUI.IntegrationTests
             var updateMutation = new GraphQLHttpRequest
             {
                 Query = @"mutation updateNonCapitalItem($id: Int!, $nonCapitalItem: NonCapitalItemInputType!) {
-                            updateExpenseItem(id : $id, nonCapitalItem : $nonCapitalItem) {
+                            updateNonCapitalItem(id : $id, nonCapitalItem : $nonCapitalItem) {
+                                id
                                 name
                                 unitCost
                                 description
@@ -216,7 +221,7 @@ namespace bike_selling_app.WebUI.IntegrationTests
                 Variables = new
                 {
                     id = nonCapitalItemResponse.Data.addNonCapitalItem.Id,
-                    expenseItem = new
+                    nonCapitalItem = new
                     {
                         name = "Tape",
                         unitCost = 1.25,

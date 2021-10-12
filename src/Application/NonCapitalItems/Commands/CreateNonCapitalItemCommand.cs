@@ -32,6 +32,7 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             var expenseItems = await context.GetAllExpenseItems();
             foreach (int id in request.NonCapitalItem.ExpenseItemIds)
             {
+                // TODO do we need to update the foreign key of the expense item here?
                 // Only add the id once
                 if (!newItem.ExpenseItems.Select(ei => ei.Id).ToList().Contains(id))
                 {

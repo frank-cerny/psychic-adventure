@@ -199,7 +199,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Mutations
                 });
 
             FieldAsync<NonCapitalItemType>(
-                "deleteNonCapitalItem",
+                "removeNonCapitalItem",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id"}
                 ),

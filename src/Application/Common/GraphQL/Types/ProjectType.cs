@@ -27,7 +27,14 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
                     return allBikes.Where(b => b.ProjectId == context.Source.Id).ToList();
                 }
             );
-            // TODO - Add capital item, non capital item, and revenue items when they are ready
+            // TODO - Can I do this without having to use async? The database call already returns the data we need
+            FieldAsync<ListGraphType<NonCapitalItemType>, IList<NonCapitalItem>> (
+                name: "nonCapitalItems",
+                resolve: async context => {
+                    return context.Source.NonCapitalItems;
+                }
+            );
+            // TODO - Add capital item and revenue items when they are ready
         }
     }
 }

@@ -14,7 +14,7 @@ namespace bike_selling_app.Application.Common.GraphQL.Types
             Field<NonNullGraphType<StringGraphType>>("title");
             // TODO - Uncomment these as they become available
             // Field<ListGraphType<IntGraphType>>("capitalItemIds");
-            // Field<ListGraphType<IntGraphType>>("nonCapitalItemIds");
+            Field<ListGraphType<IntGraphType>>("nonCapitalItemIds");
             // Field<ListGraphType<IntGraphType>>("revenueItemIds");
         }
     }

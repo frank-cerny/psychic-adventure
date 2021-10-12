@@ -86,20 +86,23 @@ namespace bike_selling_app.WebUI.IntegrationTests
             {
                 Query = @"mutation createExpenseItem($nonCapitalItem: NonCapitalItemInputType!) {
                             addNonCapitalItem(nonCapitalItem : $nonCapitalItem) {
+                                id
                                 name
                                 unitCost
-                                units
+                                unitsPurchased
+                                unitsRemaining
                                 description
                             }
                         }",
                 OperationName = "Add NonCapitalItem",
                 Variables = new
                 {
-                    expenseItem = new
+                    nonCapitalItem = new
                     {
                         name = "Brake Cable",
                         unitCost = 5.67,
-                        units = 5,
+                        unitsPurchased = 5,
+                        unitsRemaining = 4,
                         datePurchased = "07-15-2021",
                     }
                 }
