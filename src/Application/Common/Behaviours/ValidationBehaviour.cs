@@ -38,9 +38,8 @@ namespace bike_selling_app.Application.Common.Behaviours
                     {
                         errorList += $"Validation Error: Message: {f.ErrorMessage}; Property: {f.PropertyName}; Value: {request}\n";
                     }
-                    _logger.LogError(errorList);
 
-                    throw new ValidationException(failures);
+                    throw new ValidationException(errorList);
                 }
             }
             return await next();

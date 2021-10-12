@@ -1838,3 +1838,397 @@ SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", 
 FROM "Bikes" AS "b"
 2021-10-10 20:45:28.536 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 222 - 200 - application/json 40.4092ms
 2021-10-10 20:45:31.047 -04:00 [INF] Application is shutting down...
+2021-10-12 19:34:26.617 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-10-12 19:34:26.976 -04:00 [INF] Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA journal_mode = 'wal';
+2021-10-12 19:34:27.116 -04:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "__EFMigrationsHistory" (
+    "MigrationId" TEXT NOT NULL CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY,
+    "ProductVersion" TEXT NOT NULL
+);
+2021-10-12 19:34:27.142 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-10-12 19:34:27.153 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-10-12 19:34:27.191 -04:00 [INF] Applying migration '20211011002103_initial_migration'.
+2021-10-12 19:34:27.260 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CapitalItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_CapitalItems" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "Description" TEXT NOT NULL,
+    "DatePurchased" TEXT NOT NULL,
+    "Cost" REAL NOT NULL,
+    "UsageCount" INTEGER NOT NULL
+);
+2021-10-12 19:34:27.265 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Projects" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Projects" PRIMARY KEY AUTOINCREMENT,
+    "Description" TEXT NULL,
+    "Title" TEXT NULL,
+    "DateStarted" TEXT NULL,
+    "DateEnded" TEXT NULL,
+    "NetValue" REAL NOT NULL
+);
+2021-10-12 19:34:27.272 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Bikes" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_Bikes" PRIMARY KEY AUTOINCREMENT,
+    "SerialNumber" TEXT NOT NULL,
+    "Make" TEXT NOT NULL,
+    "Model" TEXT NOT NULL,
+    "PurchasePrice" REAL NOT NULL,
+    "PurchasedFrom" TEXT NOT NULL,
+    "ProjectId" INTEGER NULL,
+    "DatePurchased" TEXT NOT NULL,
+    CONSTRAINT "FK_Bikes_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id") ON DELETE RESTRICT
+);
+2021-10-12 19:34:27.278 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CapitalItemProject" (
+    "CapitalItemsId" INTEGER NOT NULL,
+    "ProjectsId" INTEGER NOT NULL,
+    CONSTRAINT "PK_CapitalItemProject" PRIMARY KEY ("CapitalItemsId", "ProjectsId"),
+    CONSTRAINT "FK_CapitalItemProject_CapitalItems_CapitalItemsId" FOREIGN KEY ("CapitalItemsId") REFERENCES "CapitalItems" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_CapitalItemProject_Projects_ProjectsId" FOREIGN KEY ("ProjectsId") REFERENCES "Projects" ("Id") ON DELETE CASCADE
+);
+2021-10-12 19:34:27.285 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "NonCapitalItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_NonCapitalItems" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "Description" TEXT NOT NULL,
+    "DatePurchased" TEXT NOT NULL,
+    "ProjectId" INTEGER NULL,
+    "UnitCost" REAL NOT NULL,
+    "Units" INTEGER NOT NULL,
+    CONSTRAINT "FK_NonCapitalItems_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id") ON DELETE RESTRICT
+);
+2021-10-12 19:34:27.290 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevenueItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_RevenueItems" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "Description" TEXT NOT NULL,
+    "DatePurchased" TEXT NOT NULL,
+    "SalePrice" REAL NOT NULL,
+    "PlatformSoldOn" TEXT NOT NULL,
+    "RevenueItemType" TEXT NOT NULL,
+    "IsPending" INTEGER NOT NULL,
+    "Weight" REAL NOT NULL,
+    "DateSold" TEXT NOT NULL,
+    "ProjectId" INTEGER NULL,
+    CONSTRAINT "FK_RevenueItems_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id") ON DELETE RESTRICT
+);
+2021-10-12 19:34:27.302 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ExpenseItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_ExpenseItems" PRIMARY KEY AUTOINCREMENT,
+    "Name" TEXT NOT NULL,
+    "Description" TEXT NULL,
+    "DatePurchased" TEXT NOT NULL,
+    "UnitCost" REAL NOT NULL,
+    "Units" INTEGER NOT NULL,
+    "CapitalItemId" INTEGER NULL,
+    "NonCapitalItemId" INTEGER NULL,
+    "RevenueItemId" INTEGER NULL,
+    CONSTRAINT "FK_ExpenseItems_CapitalItems_CapitalItemId" FOREIGN KEY ("CapitalItemId") REFERENCES "CapitalItems" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_ExpenseItems_NonCapitalItems_NonCapitalItemId" FOREIGN KEY ("NonCapitalItemId") REFERENCES "NonCapitalItems" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_ExpenseItems_RevenueItems_RevenueItemId" FOREIGN KEY ("RevenueItemId") REFERENCES "RevenueItems" ("Id") ON DELETE RESTRICT
+);
+2021-10-12 19:34:27.308 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Bikes_ProjectId" ON "Bikes" ("ProjectId");
+2021-10-12 19:34:27.312 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Bikes_SerialNumber_Make_Model" ON "Bikes" ("SerialNumber", "Make", "Model");
+2021-10-12 19:34:27.317 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_CapitalItemProject_ProjectsId" ON "CapitalItemProject" ("ProjectsId");
+2021-10-12 19:34:27.324 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_CapitalItemId" ON "ExpenseItems" ("CapitalItemId");
+2021-10-12 19:34:27.331 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_ExpenseItems_Name_DatePurchased" ON "ExpenseItems" ("Name", "DatePurchased");
+2021-10-12 19:34:27.334 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_NonCapitalItemId" ON "ExpenseItems" ("NonCapitalItemId");
+2021-10-12 19:34:27.338 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_RevenueItemId" ON "ExpenseItems" ("RevenueItemId");
+2021-10-12 19:34:27.342 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_NonCapitalItems_ProjectId" ON "NonCapitalItems" ("ProjectId");
+2021-10-12 19:34:27.348 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_Projects_Title" ON "Projects" ("Title");
+2021-10-12 19:34:27.351 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_RevenueItems_ProjectId" ON "RevenueItems" ("ProjectId");
+2021-10-12 19:34:27.354 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20211011002103_initial_migration', '5.0.5');
+2021-10-12 19:34:27.386 -04:00 [INF] Applying migration '20211011002936_updating_fkeys'.
+2021-10-12 19:34:27.416 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ef_temp_ExpenseItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_ExpenseItems" PRIMARY KEY AUTOINCREMENT,
+    "CapitalItemId" INTEGER NULL,
+    "DatePurchased" TEXT NOT NULL,
+    "Description" TEXT NULL,
+    "Name" TEXT NOT NULL,
+    "NonCapitalItemId" INTEGER NULL,
+    "RevenueItemId" INTEGER NULL,
+    "UnitCost" REAL NOT NULL,
+    "Units" INTEGER NOT NULL,
+    CONSTRAINT "FK_ExpenseItems_CapitalItems_CapitalItemId" FOREIGN KEY ("CapitalItemId") REFERENCES "CapitalItems" ("Id") ON DELETE SET NULL,
+    CONSTRAINT "FK_ExpenseItems_NonCapitalItems_NonCapitalItemId" FOREIGN KEY ("NonCapitalItemId") REFERENCES "NonCapitalItems" ("Id") ON DELETE SET NULL,
+    CONSTRAINT "FK_ExpenseItems_RevenueItems_RevenueItemId" FOREIGN KEY ("RevenueItemId") REFERENCES "RevenueItems" ("Id") ON DELETE SET NULL
+);
+2021-10-12 19:34:27.422 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "ef_temp_ExpenseItems" ("Id", "CapitalItemId", "DatePurchased", "Description", "Name", "NonCapitalItemId", "RevenueItemId", "UnitCost", "Units")
+SELECT "Id", "CapitalItemId", "DatePurchased", "Description", "Name", "NonCapitalItemId", "RevenueItemId", "UnitCost", "Units"
+FROM ExpenseItems;
+2021-10-12 19:34:27.441 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 0;
+2021-10-12 19:34:27.448 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE "ExpenseItems";
+2021-10-12 19:34:27.452 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "ef_temp_ExpenseItems" RENAME TO "ExpenseItems";
+2021-10-12 19:34:27.462 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 1;
+2021-10-12 19:34:27.469 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_CapitalItemId" ON "ExpenseItems" ("CapitalItemId");
+2021-10-12 19:34:27.472 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_ExpenseItems_Name_DatePurchased" ON "ExpenseItems" ("Name", "DatePurchased");
+2021-10-12 19:34:27.480 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_NonCapitalItemId" ON "ExpenseItems" ("NonCapitalItemId");
+2021-10-12 19:34:27.485 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_RevenueItemId" ON "ExpenseItems" ("RevenueItemId");
+2021-10-12 19:34:27.488 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20211011002936_updating_fkeys', '5.0.5');
+2021-10-12 19:34:27.504 -04:00 [INF] Applying migration '20211011144433_updating_non_capital_item'.
+2021-10-12 19:34:27.533 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ef_temp_NonCapitalItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_NonCapitalItems" PRIMARY KEY AUTOINCREMENT,
+    "DatePurchased" TEXT NOT NULL,
+    "Description" TEXT NULL,
+    "Name" TEXT NOT NULL,
+    "ProjectId" INTEGER NULL,
+    "UnitCost" REAL NOT NULL,
+    "Units" INTEGER NOT NULL,
+    CONSTRAINT "FK_NonCapitalItems_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id") ON DELETE RESTRICT
+);
+2021-10-12 19:34:27.539 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "ef_temp_NonCapitalItems" ("Id", "DatePurchased", "Description", "Name", "ProjectId", "UnitCost", "Units")
+SELECT "Id", "DatePurchased", "Description", "Name", "ProjectId", "UnitCost", "Units"
+FROM NonCapitalItems;
+2021-10-12 19:34:27.549 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 0;
+2021-10-12 19:34:27.553 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE "NonCapitalItems";
+2021-10-12 19:34:27.558 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "ef_temp_NonCapitalItems" RENAME TO "NonCapitalItems";
+2021-10-12 19:34:27.566 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 1;
+2021-10-12 19:34:27.569 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_NonCapitalItems_ProjectId" ON "NonCapitalItems" ("ProjectId");
+2021-10-12 19:34:27.573 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20211011144433_updating_non_capital_item', '5.0.5');
+2021-10-12 19:34:27.586 -04:00 [INF] Applying migration '20211011174142_updating_noncapital_item'.
+2021-10-12 19:34:27.609 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "NonCapitalItems" RENAME COLUMN "Units" TO "UnitsRemaining";
+2021-10-12 19:34:27.617 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "NonCapitalItems" ADD "UnitsPurchased" INTEGER NOT NULL DEFAULT 0;
+2021-10-12 19:34:27.621 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20211011174142_updating_noncapital_item', '5.0.5');
+2021-10-12 19:34:27.635 -04:00 [INF] Applying migration '20211011215210_updating_expense_item_delete_action'.
+2021-10-12 19:34:27.659 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP INDEX "IX_ExpenseItems_RevenueItemId";
+2021-10-12 19:34:27.665 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ef_temp_ExpenseItems" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_ExpenseItems" PRIMARY KEY AUTOINCREMENT,
+    "CapitalItemId" INTEGER NULL,
+    "DatePurchased" TEXT NOT NULL,
+    "Description" TEXT NULL,
+    "Name" TEXT NOT NULL,
+    "NonCapitalItemId" INTEGER NULL,
+    "RevenueItemId" INTEGER NULL,
+    "UnitCost" REAL NOT NULL,
+    "Units" INTEGER NOT NULL,
+    CONSTRAINT "FK_ExpenseItems_CapitalItems_CapitalItemId" FOREIGN KEY ("CapitalItemId") REFERENCES "CapitalItems" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_ExpenseItems_NonCapitalItems_NonCapitalItemId" FOREIGN KEY ("NonCapitalItemId") REFERENCES "NonCapitalItems" ("Id") ON DELETE CASCADE
+);
+2021-10-12 19:34:27.671 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "ef_temp_ExpenseItems" ("Id", "CapitalItemId", "DatePurchased", "Description", "Name", "NonCapitalItemId", "RevenueItemId", "UnitCost", "Units")
+SELECT "Id", "CapitalItemId", "DatePurchased", "Description", "Name", "NonCapitalItemId", "RevenueItemId", "UnitCost", "Units"
+FROM ExpenseItems;
+2021-10-12 19:34:27.679 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 0;
+2021-10-12 19:34:27.683 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DROP TABLE "ExpenseItems";
+2021-10-12 19:34:27.688 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "ef_temp_ExpenseItems" RENAME TO "ExpenseItems";
+2021-10-12 19:34:27.695 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+PRAGMA foreign_keys = 1;
+2021-10-12 19:34:27.699 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_CapitalItemId" ON "ExpenseItems" ("CapitalItemId");
+2021-10-12 19:34:27.704 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX "IX_ExpenseItems_Name_DatePurchased" ON "ExpenseItems" ("Name", "DatePurchased");
+2021-10-12 19:34:27.707 -04:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ExpenseItems_NonCapitalItemId" ON "ExpenseItems" ("NonCapitalItemId");
+2021-10-12 19:34:27.715 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20211011215210_updating_expense_item_delete_action', '5.0.5');
+2021-10-12 19:34:27.985 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-10-12 19:34:28.206 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?', @p1='?' (Size = 7), @p2='?' (Size = 5), @p3='?', @p4='?', @p5='?' (Size = 20), @p6='?' (Size = 7)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Bikes" ("DatePurchased", "Make", "Model", "ProjectId", "PurchasePrice", "PurchasedFrom", "SerialNumber")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+SELECT "Id"
+FROM "Bikes"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-10-12 19:34:28.310 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-10-12 19:34:28.324 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-10-12 19:34:28.391 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?', @p1='?', @p2='?' (Size = 22), @p3='?', @p4='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Projects" ("DateEnded", "DateStarted", "Description", "NetValue", "Title")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT "Id"
+FROM "Projects"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-10-12 19:34:28.404 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p6='?', @p5='?'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Bikes" SET "ProjectId" = @p5
+WHERE "Id" = @p6;
+SELECT changes();
+2021-10-12 19:34:28.431 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."Cost", "c"."DatePurchased", "c"."Description", "c"."Name", "c"."UsageCount"
+FROM "CapitalItems" AS "c"
+WHERE "c"."Name" = 'TestItem'
+LIMIT 2
+2021-10-12 19:34:28.474 -04:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?', @p1='?', @p2='?' (Size = 14), @p3='?' (Size = 8), @p4='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "CapitalItems" ("Cost", "DatePurchased", "Description", "Name", "UsageCount")
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT "Id"
+FROM "CapitalItems"
+WHERE changes() = 1 AND "rowid" = last_insert_rowid();
+2021-10-12 19:34:28.527 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-10-12 19:34:28.840 -04:00 [INF] Now listening on: https://localhost:5001
+2021-10-12 19:34:28.842 -04:00 [INF] Now listening on: http://localhost:5000
+2021-10-12 19:34:28.844 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-10-12 19:34:28.847 -04:00 [INF] Hosting environment: Development
+2021-10-12 19:34:28.849 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-10-12 19:34:31.492 -04:00 [INF] Request starting HTTP/2 GET https://localhost:5001/ui/altair - -
+2021-10-12 19:34:31.586 -04:00 [INF] Request finished HTTP/2 GET https://localhost:5001/ui/altair - - - 200 - text/html 95.4853ms
+2021-10-12 19:34:43.708 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 248
+2021-10-12 19:34:44.023 -04:00 [ERR] GraphQL Error. Timestamp: 10/12/2021 11:34:44 PM, Message: Variable '$project.title' is invalid. No value provided for a non-null variable., Details: 
+2021-10-12 19:34:44.067 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 248 - 200 - application/json 357.2101ms
+2021-10-12 19:34:59.387 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 273
+2021-10-12 19:34:59.505 -04:00 [INF] bike_selling_app Request: CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+2021-10-12 19:34:59.581 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-10-12 19:34:59.603 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-10-12 19:34:59.684 -04:00 [WRN] Compiling a query which loads related collections for more than one collection navigation either via 'Include' or through projection but no 'QuerySplittingBehavior' has been configured. By default Entity Framework will use 'QuerySplittingBehavior.SingleQuery' which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'
+2021-10-12 19:34:59.724 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title", "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber", "n"."Id", "n"."DatePurchased", "n"."Description", "n"."Name", "n"."ProjectId", "n"."UnitCost", "n"."UnitsPurchased", "n"."UnitsRemaining"
+FROM "Projects" AS "p"
+LEFT JOIN "Bikes" AS "b" ON "p"."Id" = "b"."ProjectId"
+LEFT JOIN "NonCapitalItems" AS "n" ON "p"."Id" = "n"."ProjectId"
+ORDER BY "p"."Id", "b"."Id", "n"."Id"
+2021-10-12 19:34:59.774 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "n"."Id", "n"."DatePurchased", "n"."Description", "n"."Name", "n"."ProjectId", "n"."UnitCost", "n"."UnitsPurchased", "n"."UnitsRemaining", "e"."Id", "e"."CapitalItemId", "e"."DatePurchased", "e"."Description", "e"."Name", "e"."NonCapitalItemId", "e"."RevenueItemId", "e"."UnitCost", "e"."Units"
+FROM "NonCapitalItems" AS "n"
+LEFT JOIN "ExpenseItems" AS "e" ON "n"."Id" = "e"."NonCapitalItemId"
+ORDER BY "n"."Id", "e"."Id"
+2021-10-12 19:34:59.786 -04:00 [ERR] Validation Error: Message: All bike ids must exist; Property: project.BikeIds; Value: bike_selling_app.Application.Projects.Commands.CreateProjectCommand
+
+2021-10-12 19:34:59.790 -04:00 [ERR] bike_selling_app Request: Unhandled Exception for Request CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+bike_selling_app.Application.Common.Exceptions.ValidationException: One or more validation failures have occurred.
+   at bike_selling_app.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\ValidationBehaviour.cs:line 43
+   at bike_selling_app.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 22
+2021-10-12 19:34:59.869 -04:00 [ERR] GraphQL Error. Timestamp: 10/12/2021 11:34:59 PM, Message: One or more validation failures have occurred., Details: bike_selling_app.Application.Common.Exceptions.ValidationException: One or more validation failures have occurred.
+   at bike_selling_app.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\ValidationBehaviour.cs:line 43
+   at bike_selling_app.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 22
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPostProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPreProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at bike_selling_app.Application.Common.GraphQL.Mutations.RootMutation.<>c__DisplayClass0_0.<<-ctor>b__3>d.MoveNext() in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\GraphQL\Mutations\RootMutation.cs:line 82
+--- End of stack trace from previous location ---
+   at GraphQL.Execution.ExecutionStrategy.ExecuteNodeAsync(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 398
+2021-10-12 19:34:59.897 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 509.6262ms
+2021-10-12 19:38:25.319 -04:00 [INF] Application is shutting down...
+2021-10-12 19:38:34.832 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-10-12 19:38:35.055 -04:00 [INF] Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-10-12 19:38:35.073 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2021-10-12 19:38:35.095 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2021-10-12 19:38:35.123 -04:00 [INF] No migrations were applied. The database is already up to date.
+2021-10-12 19:38:35.406 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+WHERE "b"."SerialNumber" = '2124893'
+LIMIT 2
+2021-10-12 19:38:35.515 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title"
+FROM "Projects" AS "p"
+WHERE "p"."Title" = 'Test Project'
+LIMIT 2
+2021-10-12 19:38:35.619 -04:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."Cost", "c"."DatePurchased", "c"."Description", "c"."Name", "c"."UsageCount"
+FROM "CapitalItems" AS "c"
+WHERE "c"."Name" = 'TestItem'
+LIMIT 2
+2021-10-12 19:38:35.694 -04:00 [INF] User profile is available. Using 'C:\Users\Frank\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-10-12 19:38:35.993 -04:00 [INF] Now listening on: https://localhost:5001
+2021-10-12 19:38:35.998 -04:00 [INF] Now listening on: http://localhost:5000
+2021-10-12 19:38:36.000 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-10-12 19:38:36.002 -04:00 [INF] Hosting environment: Development
+2021-10-12 19:38:36.007 -04:00 [INF] Content root path: C:\Users\Frank\Documents\GitHub\bike-selling-app\src\WebUI
+2021-10-12 19:38:42.650 -04:00 [INF] Request starting HTTP/2 POST https://localhost:5001/graphql application/json 273
+2021-10-12 19:38:42.958 -04:00 [INF] bike_selling_app Request: CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+2021-10-12 19:38:43.034 -04:00 [INF] Entity Framework Core 5.0.5 initialized 'ApplicationDbContextSqlite' using provider 'Microsoft.EntityFrameworkCore.Sqlite' with options: None
+2021-10-12 19:38:43.070 -04:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber"
+FROM "Bikes" AS "b"
+2021-10-12 19:38:43.147 -04:00 [WRN] Compiling a query which loads related collections for more than one collection navigation either via 'Include' or through projection but no 'QuerySplittingBehavior' has been configured. By default Entity Framework will use 'QuerySplittingBehavior.SingleQuery' which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'
+2021-10-12 19:38:43.180 -04:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Id", "p"."DateEnded", "p"."DateStarted", "p"."Description", "p"."NetValue", "p"."Title", "b"."Id", "b"."DatePurchased", "b"."Make", "b"."Model", "b"."ProjectId", "b"."PurchasePrice", "b"."PurchasedFrom", "b"."SerialNumber", "n"."Id", "n"."DatePurchased", "n"."Description", "n"."Name", "n"."ProjectId", "n"."UnitCost", "n"."UnitsPurchased", "n"."UnitsRemaining"
+FROM "Projects" AS "p"
+LEFT JOIN "Bikes" AS "b" ON "p"."Id" = "b"."ProjectId"
+LEFT JOIN "NonCapitalItems" AS "n" ON "p"."Id" = "n"."ProjectId"
+ORDER BY "p"."Id", "b"."Id", "n"."Id"
+2021-10-12 19:38:43.219 -04:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "n"."Id", "n"."DatePurchased", "n"."Description", "n"."Name", "n"."ProjectId", "n"."UnitCost", "n"."UnitsPurchased", "n"."UnitsRemaining", "e"."Id", "e"."CapitalItemId", "e"."DatePurchased", "e"."Description", "e"."Name", "e"."NonCapitalItemId", "e"."RevenueItemId", "e"."UnitCost", "e"."Units"
+FROM "NonCapitalItems" AS "n"
+LEFT JOIN "ExpenseItems" AS "e" ON "n"."Id" = "e"."NonCapitalItemId"
+ORDER BY "n"."Id", "e"."Id"
+2021-10-12 19:38:43.227 -04:00 [ERR] Validation Error: Message: All bike ids must exist; Property: project.BikeIds; Value: bike_selling_app.Application.Projects.Commands.CreateProjectCommand
+
+2021-10-12 19:38:43.230 -04:00 [ERR] bike_selling_app Request: Unhandled Exception for Request CreateProjectCommand {"project":{"BikeIds":[3,4],"Description":"testing","Title":"a new project!","Id":0,"CapitalItemIds":[],"NonCapitalItemIds":[],"RevenueItemIds":[],"DateStarted":null,"DateEnded":null,"$type":"ProjectRequestDto"},"$type":"CreateProjectCommand"}
+bike_selling_app.Application.Common.Exceptions.ValidationException: One or more validation failures have occurred. Validation Error: Message: All bike ids must exist; Property: project.BikeIds; Value: bike_selling_app.Application.Projects.Commands.CreateProjectCommand
+
+   at bike_selling_app.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\ValidationBehaviour.cs:line 43
+   at bike_selling_app.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 22
+2021-10-12 19:38:43.303 -04:00 [ERR] GraphQL Error. Timestamp: 10/12/2021 11:38:43 PM, Message: One or more validation failures have occurred. Validation Error: Message: All bike ids must exist; Property: project.BikeIds; Value: bike_selling_app.Application.Projects.Commands.CreateProjectCommand
+, Details: bike_selling_app.Application.Common.Exceptions.ValidationException: One or more validation failures have occurred. Validation Error: Message: All bike ids must exist; Property: project.BikeIds; Value: bike_selling_app.Application.Projects.Commands.CreateProjectCommand
+
+   at bike_selling_app.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\ValidationBehaviour.cs:line 43
+   at bike_selling_app.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 22
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPostProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPreProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at bike_selling_app.Application.Common.GraphQL.Mutations.RootMutation.<>c__DisplayClass0_0.<<-ctor>b__3>d.MoveNext() in C:\Users\Frank\Documents\GitHub\bike-selling-app\src\Application\Common\GraphQL\Mutations\RootMutation.cs:line 82
+--- End of stack trace from previous location ---
+   at GraphQL.Execution.ExecutionStrategy.ExecuteNodeAsync(ExecutionContext context, ExecutionNode node) in /_/src/GraphQL/Execution/ExecutionStrategy.cs:line 398
+2021-10-12 19:38:43.369 -04:00 [INF] Request finished HTTP/2 POST https://localhost:5001/graphql application/json 273 - 200 - application/json 722.2484ms
+2021-10-12 19:39:28.238 -04:00 [INF] Application is shutting down...
