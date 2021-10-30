@@ -12,6 +12,8 @@ namespace bike_selling_app.Infrastructure.Persistence.Configurations
             builder.Property(ci => ci.Cost).IsRequired();
             builder.Property(ci => ci.Name).HasMaxLength(100).IsRequired();
             builder.Property(ci => ci.Description).HasMaxLength(250).IsRequired();
+            // Reference: https://www.learnentityframeworkcore.com/configuration/fluent-api/ignore-method
+            builder.Ignore(ci => ci.UsageCount);
             builder.HasMany(ci => ci.ExpenseItems)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);

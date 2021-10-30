@@ -23,6 +23,18 @@ This is a useful tool for generating software bill of materials
 
 Run `dotnet CycloneDX <path> -o <OUTPUT_DIRECTORY>` or use a helper script inside of `tools/`
 
+# How To Run
+
+## API
+
+Build with `dotnet build`
+Run with `dotnet run` (must be in `src/API` directory)
+Deploy with ?
+
+## FrontEnd
+
+?
+
 # Questions
 
 1. How to handle postage and such? Call it a non-cap item? Or attach to a revenue item?

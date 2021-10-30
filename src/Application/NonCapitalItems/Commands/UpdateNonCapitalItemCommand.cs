@@ -25,8 +25,7 @@ namespace bike_selling_app.Application.NonCapitalItems.Commands
             _scopeFactory = scopeFactory;
             _mapper = mapper;
         }
-
-        // TODO 
+        
         public async Task<NonCapitalItem> Handle(UpdateNonCapitalItemCommand request, CancellationToken cancellationToken)
         {
             var context = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IApplicationDbContext>();
